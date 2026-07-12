@@ -1,0 +1,1479 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GBS504 — تطبيقات حاسوبية | Support Channel</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Alexandria:wght@100;200;300;400;500;600;700;800;900&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#10192B;
+  --ink-2:#182338;
+  --ink-3:#233252;
+  --paper:#F4EEDF;
+  --paper-2:#EBE3CE;
+  --brass:#CB9F45;
+  --brass-deep:#96702A;
+  --teal:#3C7B70;
+  --teal-deep:#265A51;
+  --danger:#B4483F;
+  --success:#3C7B58;
+  --ink-text:#1B2436;
+  --muted:#5B6478;
+  --card-shadow: 0 18px 40px -20px rgba(16,25,43,.55);
+}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{
+  background:var(--ink);
+  background-image:
+    radial-gradient(1200px 800px at 85% -10%, rgba(203,159,69,.10), transparent 60%),
+    radial-gradient(900px 700px at 0% 100%, rgba(60,123,112,.12), transparent 55%);
+  color:var(--paper);
+  font-family:'Alexandria',sans-serif;
+  min-height:100vh;
+  -webkit-font-smoothing:antialiased;
+}
+h1,h2,h3,.disp{font-family:'Alexandria Text',serif;font-weight:700;}
+.mono{font-family:'IBM Plex Mono',monospace;direction:ltr;unicode-bidi:embed;display:inline-block;}
+a{color:inherit;}
+::selection{background:var(--brass);color:var(--ink);}
+
+/* ---------- layout ---------- */
+.app{display:grid;grid-template-columns:290px 1fr;min-height:100vh;}
+@media (max-width:900px){.app{grid-template-columns:1fr;}}
+
+.sidebar{
+  background:linear-gradient(180deg,var(--ink-2),var(--ink));
+  border-left:1px solid rgba(203,159,69,.18);
+  padding:28px 22px 30px;
+  position:sticky;top:0;height:100vh;overflow-y:auto;
+}
+@media (max-width:900px){.sidebar{position:relative;height:auto;border-left:none;border-bottom:1px solid rgba(203,159,69,.18);}}
+
+.brand{display:flex;align-items:center;gap:12px;margin-bottom:6px;}
+.brand-mark{
+  width:44px;height:44px;border-radius:50%;
+  background:radial-gradient(circle at 35% 30%, var(--brass), var(--brass-deep) 70%);
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Markazi Text',serif;font-weight:700;font-size:20px;color:var(--ink);
+  box-shadow:0 6px 14px -4px rgba(0,0,0,.5);
+  flex-shrink:0;
+}
+.brand-name{font-size:13px;color:var(--brass);letter-spacing:.5px;font-weight:700;}
+.brand-course{font-size:22px;color:var(--paper);margin-top:2px;}
+.brand-sub{font-size:12.5px;color:var(--muted);margin-top:2px;}
+
+.progress-wrap{margin:22px 0 26px;}
+.progress-label{display:flex;justify-content:space-between;font-size:12px;color:var(--muted);margin-bottom:6px;}
+.progress-bar{height:8px;border-radius:6px;background:rgba(255,255,255,.08);overflow:hidden;}
+.progress-fill{height:100%;background:linear-gradient(90deg,var(--teal),var(--brass));border-radius:6px;transition:width .5s ease;}
+
+nav.navlist{display:flex;flex-direction:column;gap:5px;margin-top:8px;}
+.nav-section-label{font-size:11px;color:var(--muted);letter-spacing:1px;margin:16px 4px 6px;text-transform:uppercase;}
+.navitem{
+  display:flex;align-items:center;gap:12px;
+  padding:11px 12px;border-radius:10px;cursor:pointer;
+  color:var(--paper-2);font-size:14.5px;font-weight:600;
+  border:1px solid transparent;
+  transition:background .15s, border-color .15s;
+  position:relative;
+}
+.navitem:hover{background:rgba(255,255,255,.05);}
+.navitem.active{background:rgba(203,159,69,.14);border-color:rgba(203,159,69,.35);color:var(--brass);}
+.nav-num{
+  width:26px;height:26px;border-radius:50%;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Markazi Text',serif;font-size:14px;font-weight:700;
+  background:rgba(255,255,255,.08);color:var(--paper-2);
+}
+.navitem.active .nav-num{background:var(--brass);color:var(--ink);}
+.nav-seal{
+  margin-right:auto;width:18px;height:18px;border-radius:50%;
+  border:2px solid var(--success);display:none;align-items:center;justify-content:center;
+  font-size:10px;color:var(--success);flex-shrink:0;
+}
+.navitem.done .nav-seal{display:flex;}
+
+.main{padding:34px 40px 80px;max-width:980px;}
+@media (max-width:900px){.main{padding:22px 18px 60px;}}
+
+.top-strip{display:flex;align-items:center;justify-content:space-between;margin-bottom:26px;flex-wrap:wrap;gap:10px;}
+.crumb{font-size:13px;color:var(--muted);}
+.crumb b{color:var(--brass);}
+
+/* ---------- cards ---------- */
+.card{
+  background:var(--paper);color:var(--ink-text);
+  border-radius:16px;
+  box-shadow:var(--card-shadow);
+  padding:30px 34px;
+  margin-bottom:24px;
+  position:relative;
+  border:1px solid rgba(0,0,0,.04);
+}
+.card::before{
+  content:"";position:absolute;top:0;bottom:0;right:14px;width:0;
+  border-right:2px dashed rgba(150,112,42,.25);
+}
+.punch{position:absolute;top:26px;bottom:26px;right:-1px;width:1px;}
+.punch span{
+  position:absolute;right:-6px;width:12px;height:12px;border-radius:50%;
+  background:var(--ink);box-shadow:inset 0 2px 3px rgba(0,0,0,.4);
+}
+@media (max-width:640px){.card{padding:24px 20px;}.card::before,.punch{display:none;}}
+
+.hero-card{
+  background:linear-gradient(135deg, var(--paper) 60%, var(--paper-2));
+}
+.eyebrow{
+  display:inline-flex;align-items:center;gap:8px;
+  font-size:12.5px;font-weight:700;color:var(--brass-deep);
+  letter-spacing:.5px;margin-bottom:10px;
+}
+.eyebrow::before{content:"";width:22px;height:2px;background:var(--brass-deep);display:inline-block;}
+h1.page-title{font-size:34px;margin:0 0 10px;color:var(--ink-text);}
+p.lead{font-size:16px;line-height:1.9;color:var(--muted);margin:0;}
+
+.stamp{
+  position:absolute;left:26px;top:22px;
+  width:78px;height:78px;border-radius:50%;
+  border:3px solid var(--success);color:var(--success);
+  display:none;align-items:center;justify-content:center;flex-direction:column;
+  transform:rotate(-14deg);
+  font-family:'Markazi Text',serif;font-weight:700;
+  opacity:.9;
+}
+.stamp.show{display:flex;}
+.stamp span{font-size:11px;letter-spacing:1px;}
+.stamp b{font-size:16px;}
+
+/* section content typography */
+.sec h2{font-size:24px;color:var(--ink-text);margin:28px 0 12px;border-right:4px solid var(--brass);padding-right:12px;}
+.sec h2:first-child{margin-top:0;}
+.sec h3{font-size:18px;color:var(--brass-deep);margin:20px 0 8px;}
+.sec p, .sec li{font-size:15.5px;line-height:1.95;color:var(--ink-text);}
+.sec ul{padding-right:22px;margin:10px 0;}
+.sec ul li{margin-bottom:6px;}
+.sec .note{
+  background:rgba(60,123,112,.08);border-right:3px solid var(--teal);
+  padding:12px 16px;border-radius:8px;font-size:14.5px;color:var(--teal-deep);margin:14px 0;
+}
+.sec .warn{
+  background:rgba(180,72,63,.08);border-right:3px solid var(--danger);
+  padding:12px 16px;border-radius:8px;font-size:14.5px;color:#7A2F28;margin:14px 0;
+}
+table.ref{width:100%;border-collapse:collapse;margin:14px 0;font-size:14.5px;}
+table.ref th,table.ref td{border:1px solid rgba(0,0,0,.12);padding:8px 10px;text-align:right;}
+table.ref th{background:var(--paper-2);color:var(--brass-deep);}
+table.ref td.mono{font-family:'IBM Plex Mono',monospace;direction:ltr;text-align:left;}
+
+.chips{display:flex;gap:8px;flex-wrap:wrap;margin:14px 0;}
+.chip{
+  background:var(--ink);color:var(--brass);border-radius:20px;padding:6px 14px;font-size:13px;font-weight:600;
+  font-family:'IBM Plex Mono',monospace;
+}
+
+/* ---------- buttons ---------- */
+.btn{
+  display:inline-flex;align-items:center;gap:8px;
+  background:var(--ink);color:var(--brass);
+  border:none;border-radius:10px;padding:12px 22px;
+  font-family:'Cairo',sans-serif;font-weight:700;font-size:14.5px;
+  cursor:pointer;transition:transform .12s, box-shadow .12s;
+  box-shadow:0 8px 18px -8px rgba(0,0,0,.5);
+}
+.btn:hover{transform:translateY(-1px);}
+.btn.secondary{background:#f1f5f9;#1e293b;border:1px solid #cbd5e1;}
+.btn.ghost{background:transparent;color:var(--brass-deep);border:2px solid var(--brass-deep);}
+.btn:disabled{opacity:.4;cursor:not-allowed;transform:none;}
+.btn-row{display:flex;gap:12px;flex-wrap:wrap;margin-top:18px;}
+
+/* ---------- quiz ---------- */
+.quiz-meta{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;flex-wrap:wrap;gap:10px;}
+.quiz-progress{font-size:13px;color:var(--muted);}
+.q-counter{font-family:'IBM Plex Mono',monospace;color:var(--brass-deep);font-weight:600;}
+.qcard{background:var(--paper);border-radius:14px;padding:26px 28px;box-shadow:var(--card-shadow);}
+.qtag{display:inline-block;background:var(--ink);color:var(--brass);font-size:11.5px;font-weight:700;padding:4px 12px;border-radius:20px;margin-bottom:12px;}
+.qtext{font-size:18px;font-weight:700;color:var(--ink-text);line-height:1.7;margin-bottom:18px;}
+.qtext .mono{font-size:16px;}
+.question-data{margin:12px 0 2px;font-size:14px;font-weight:500;}
+.question-data table{border-collapse:collapse;direction:ltr;text-align:center;background:#fff;}
+.question-data th,.question-data td{border:1px solid rgba(0,0,0,.18);padding:4px 9px;min-width:48px;}
+.question-data th{background:var(--paper-2);color:var(--brass-deep);font-family:'IBM Plex Mono',monospace;}
+.question-data .context-label{direction:rtl;text-align:right;font-size:13px;color:var(--muted);margin-bottom:6px;}
+.options{display:flex;flex-direction:column;gap:10px;}
+.opt{
+  display:flex;align-items:center;gap:12px;
+  padding:13px 16px;border-radius:10px;border:2px solid rgba(0,0,0,.1);
+  cursor:pointer;font-size:15px;color:var(--ink-text);background:#fff;
+  transition:border-color .12s, background .12s;
+}
+.opt:hover{border-color:var(--brass);}
+.opt .bullet{width:22px;height:22px;border-radius:50%;border:2px solid var(--muted);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:12px;color:transparent;}
+.opt.correct{background:rgba(60,123,88,.12);border-color:var(--success);}
+.opt.correct .bullet{border-color:var(--success);background:var(--success);color:#fff;}
+.opt.wrong{background:rgba(180,72,63,.1);border-color:var(--danger);}
+.opt.wrong .bullet{border-color:var(--danger);background:var(--danger);color:#fff;}
+.opt.disabled{cursor:default;}
+.numeric-row{display:flex;gap:10px;align-items:center;margin-top:6px;}
+.numeric-row input{
+  flex:1;padding:13px 16px;border-radius:10px;border:2px solid rgba(0,0,0,.15);
+  font-family:'IBM Plex Mono',monospace;font-size:16px;text-align:center;direction:ltr;
+}
+.numeric-row input:focus{outline:none;border-color:var(--brass);}
+.feedback{margin-top:16px;padding:14px 16px;border-radius:10px;font-size:14.5px;line-height:1.8;display:none;}
+.feedback.show{display:block;}
+.feedback.ok{background:rgba(60,123,88,.12);color:var(--teal-deep);border-right:3px solid var(--success);}
+.feedback.bad{background:rgba(180,72,63,.1);color:#7A2F28;border-right:3px solid var(--danger);}
+.explain-label{font-weight:700;}
+
+.result-card{text-align:center;padding:40px 30px;}
+.result-score{font-family:'Markazi Text',serif;font-size:64px;color:var(--brass-deep);line-height:1;}
+.result-score span{font-size:26px;color:var(--muted);}
+.result-msg{font-size:16px;color:var(--ink-text);margin:14px 0 6px;}
+
+/* bank list */
+.bank-item{border-bottom:1px solid rgba(0,0,0,.08);padding:16px 4px;}
+.bank-q{display:flex;justify-content:space-between;align-items:flex-start;gap:14px;cursor:pointer;}
+.bank-q-text{font-size:15px;font-weight:600;color:var(--ink-text);line-height:1.7;}
+.bank-idx{font-family:'IBM Plex Mono',monospace;color:var(--brass-deep);font-size:13px;flex-shrink:0;margin-top:2px;}
+.bank-ans{display:none;margin-top:10px;font-size:14.5px;color:var(--teal-deep);background:rgba(60,123,112,.08);padding:10px 14px;border-radius:8px;}
+.bank-ans.show{display:block;}
+.bank-filter{display:flex;gap:8px;margin-bottom:18px;flex-wrap:wrap;}
+.filter-btn{
+  border:2px solid rgba(0,0,0,.15);background:transparent;border-radius:20px;
+  padding:7px 16px;font-size:13px;font-weight:700;cursor:pointer;color:var(--ink-text);
+}
+.filter-btn.active{background:var(--ink);color:var(--brass);border-color:var(--ink);}
+
+.lock-card{text-align:center;padding:50px 30px;}
+.lock-icon{font-size:44px;margin-bottom:14px;}
+
+footer.foot{text-align:center;color:var(--muted);font-size:12.5px;padding:30px 0 10px;}
+</style>
+</head>
+<body>
+<div class="app">
+
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="brand-mark">SC</div>
+      <div>
+        <div class="brand-name">SUPPORT CHANNEL</div>
+      </div>
+    </div>
+    <div class="brand-course disp">تطبيقات حاسوبية</div>
+    <div class="brand-sub">GBS504</div>
+
+    <div class="progress-wrap">
+      <div class="progress-label"><span>التقدّم الإجمالي</span><span id="overallPct">0%</span></div>
+      <div class="progress-bar"><div class="progress-fill" id="overallFill" style="width:0%"></div></div>
+    </div>
+
+    <nav class="navlist" id="navlist"></nav>
+
+    <div class="nav-section-label">تقييم</div>
+    <nav class="navlist" id="navlist2"></nav>
+  </aside>
+
+  <main class="main">
+    <div class="top-strip">
+      <div class="crumb">Support Channel <span id="crumbSep">/</span> <b id="crumbTitle">الرئيسية</b></div>
+    </div>
+    <div id="content"></div>
+    <footer class="foot">Support Channel — حقوق النشر محفوظة - Bashar Karkinly - 2026 · هذا الملخص أداة مساعدة على الدراسة ولا يعوّض المراجع الرسمية.</footer>
+  </main>
+
+</div>
+
+<script>
+// ============ CHAPTER READING CONTENT ============
+const CHAPTERS = [
+{
+  id:'ch1', num:1,
+  title:'الحاسوب، أتمتة المكاتب، وتصنيف البرمجيات',
+  short:'مقدمة عامة',
+  html:`
+  <div class="sec">
+    <h2>١) تعريف الحاسوب ومزاياه</h2>
+    <p><b>الحاسوب:</b> جهاز إلكتروني سريع يعالج بيانات الإدخال وفقاً لتعليمات المبرمج أو المستخدم، ويوفر المعلومات المطلوبة كخرج.</p>
+    <ul>
+      <li><b>السرعة</b> — يؤدي المهام الحسابية/المنطقية في ثواني.</li>
+      <li><b>الدقة</b> — في إجراء العمليات الحسابية.</li>
+      <li><b>الاجتهاد</b> — لا يتعب ولا يُرهق كالإنسان.</li>
+      <li><b>الذاكرة الكبيرة.</b></li>
+    </ul>
+    <div class="warn"><b>العيب الرئيسي:</b> عدم الذكاء — فهو آلة وليس له ذكاء خاص به عكس الإنسان.</div>
+    <h3>الأدوار الحيوية الثلاثة لأنظمة الحاسوب</h3>
+    <ul><li>دعم العمليات التجارية</li><li>دعم اتخاذ القرارات الإدارية</li><li>دعم الميزة التنافسية الاستراتيجية</li></ul>
+
+    <h2>٢) تصنيف الحواسيب</h2>
+    <h3>من حيث النوع</h3>
+    <ul>
+      <li><b>تناظرية:</b> تقيس تغيّرات الظواهر الطبيعية (مثل قياس دقات القلب والحرارة).</li>
+      <li><b>رقمية:</b> الأكثر استخداماً، تُنفّذ العمليات الحسابية والمنطقية.</li>
+      <li><b>مختلطة:</b> تجمع الاثنين (الطب، الفضاء).</li>
+    </ul>
+    <h3>من حيث الحجم</h3>
+    <ul><li>عملاقة (Super) — أشهرها "كيري"</li><li>كبيرة — مؤسسات حكومية وجامعات وبنوك</li><li>صغيرة — الحاسوب الشخصي</li></ul>
+    <h3>من حيث الغرض</h3>
+    <ul><li>عامة الأغراض — تشغّل مجموعة كبيرة من التطبيقات (كل الحواسيب الرقمية)</li><li>خاصة الأغراض — تطبيق واحد محدد (توجيه الطائرات، الصواريخ...)</li></ul>
+    <p>يتألف نظام الحاسوب من: <b>وحدة الإدخال/الإخراج، وحدة المعالجة المركزية، وحدة الذاكرة.</b></p>
+
+    <h2>٣) أتمتة المكاتب</h2>
+    <p>متطلبات بيئة المكتب: تقليل تكلفة المصروفات الإدارية، زيادة كفاءة المهام المكتبية، تقديم أفضل خدمة للعملاء، توفير معلومات دقيقة للإدارة، أفضل وأسرع طريقة للاتصال.</p>
+    <h3>الوظائف الأساسية لأتمتة أي مكتب</h3>
+    <ul>
+      <li><b>إنشاء المستندات</b> — آلات كاتبة، حواسيب، طابعات.</li>
+      <li><b>معالجة المستندات</b> — معالج نصوص، نشر مكتبي.</li>
+      <li><b>توزيع المستندات</b> — إصدار الوثائق وتحديد الجهة والوسيلة المناسبة.</li>
+      <li><b>الأرشفة</b> — حفظ منظم للاستخدام اللاحق.</li>
+    </ul>
+    <div class="note">أربعة أنظمة أتمتة مكاتب: أنظمة إدارة المستندات، أنظمة الاتصالات، أنظمة المؤتمرات عن بعد، أنظمة الدعم.</div>
+
+    <h2>٤) تصنيف البرمجيات</h2>
+    <h3>١. برمجيات النظام</h3>
+    <p>تتحكم بعمل الأجهزة وتساعد بالتنفيذ الفعّال لتطبيقات المستخدم. ثلاثة أنواع:</p>
+    <ul>
+      <li>برامج إدارة النظام (نظام التشغيل وبيئات التشغيل)</li>
+      <li>برامج تطوير النظام (المترجمات ومولدات التطبيقات)</li>
+      <li>أدوات برمجيات النظام (الأدوات المساعدة)</li>
+    </ul>
+    <table class="ref"><tr><th>النوع</th><th>الوظيفة</th></tr>
+    <tr><td>المفسّر (Interpreter)</td><td>ينفّذ التعليمات تعليمة تلو تعليمة، لا يُنتج برنامج كائن منفصل</td></tr>
+    <tr><td>المترجم (Compiler)</td><td>يترجم البرنامج المصدر كاملاً دفعة واحدة وينتج برنامج كائن</td></tr>
+    <tr><td>المجمّع (Assembler)</td><td>يحوّل لغة الأسمبلي (رموز) إلى لغة الآلة</td></tr>
+    </table>
+    <p><b>الأدوات المساعدة (Utilities):</b> محرر النصوص Editor، مدير الملفات File Manager، المحمّل Loader، محدد الموقع Locator، الرابط Linker.</p>
+
+    <h3>٢. برمجيات التطبيقات</h3>
+    <p><b>ذات الأغراض العامة:</b> معالج النصوص، النشر المكتبي، الجداول الإلكترونية، إدارة قواعد البيانات (DBMS).</p>
+    <p><b>ذات الأغراض الخاصة:</b> إدارة الأعمال (Payroll)، نظام المعلومات الإدارية MIS، نظام إدارة المكتبة، تطبيقات علمية (CAD/CAM, SPSS, SAS)، تطبيقات عبر الإنترنت.</p>
+    <p><b>برامج مخصّصة:</b> تُطوَّر فردياً أو بطلب من منظمات مهنية متخصصة.</p>
+  </div>`
+},
+{
+  id:'ch2', num:2,
+  title:'Excel — الدوال، المراجع، وتحليل البيانات',
+  short:'الجزء العملي',
+  html:`
+  <div class="sec">
+    <h2>١) أساسيات الخلية والملف</h2>
+    <ul>
+      <li><b>الخلية النشطة (Active Cell):</b> محاطة بإطار أسود سميك.</li>
+      <li><b>شريط الصيغة:</b> يُظهر محتوى الخلية والعمليات الجارية فيها.</li>
+      <li><b>مربع الاسم (Name Box):</b> يُظهر اسم/عنوان الخلية المحددة.</li>
+      <li>خلية العمود A والسطر 5 تُسمّى <span class="mono">A5</span> — الحرف أولاً ثم رقم السطر.</li>
+      <li><b>حفظ باسم</b> ≠ <b>حفظ</b>: "حفظ باسم" يُنشئ نسخة إضافية من الملف.</li>
+      <li>تاريخ إكسل يبدأ في <span class="mono">1900/1/1</span> (يأخذ القيمة 1) وينتهي عام <span class="mono">9999</span>.</li>
+    </ul>
+
+    <h2>٢) المراجع (References) — سؤال امتحاني دائم</h2>
+    <table class="ref">
+      <tr><th>النوع</th><th>الشكل</th><th>عند النسخ/التعبئة التلقائية</th></tr>
+      <tr><td>نسبي</td><td class="mono">A1</td><td>يتغيّر السطر والعمود</td></tr>
+      <tr><td>مطلق</td><td class="mono">$A$1</td><td>لا يتغيّر أي منهما ($ قبل الحرف وقبل الرقم)</td></tr>
+      <tr><td>مختلط</td><td class="mono">$A1 أو A$1</td><td>يتغيّر فقط ما لا تسبقه $</td></tr>
+    </table>
+    <div class="note">مثال: <span class="mono">$A$2+A1</span> — الجزء <span class="mono">A1</span> فقط نسبي، فيتغيّر عند النقل، بينما <span class="mono">$A$2</span> ثابت لا يتغيّر.</div>
+
+    <h2>٣) رموز البحث والتصفية النصية</h2>
+    <table class="ref">
+      <tr><th>الرمز</th><th>الدلالة</th></tr>
+      <tr><td class="mono">#</td><td>حروف وأرقام لا تتسع في الخلية</td></tr>
+      <tr><td class="mono">*</td><td>حروف وأرقام مجهولة (بعدد غير محدد)</td></tr>
+      <tr><td class="mono">?</td><td>حرف أو رقم مجهول واحد فقط</td></tr>
+    </table>
+
+    <h2>٤) قاعدة بيانات Excel — الشروط الواجب توافرها</h2>
+    <ul>
+      <li>السطر الأول لأسماء الحقول (Field Names) — كل اسم مميز.</li>
+      <li>كل عمود يحتوي نفس نوع البيانات.</li>
+      <li>عمود مستقل لكل نوع معلومة نريد الفرز أو البحث فيها.</li>
+      <li>عدم ترك أعمدة أو أسطر فارغة ضمن القاعدة.</li>
+      <li>عند وجود قاعدة بيانات وبيانات أخرى بنفس الورقة: نفصل بسطر وعمود فارغين.</li>
+    </ul>
+    <p>إدخال البيانات: مباشرة من لوحة المفاتيح، من نافذة نموذج (Form)، من قائمة منسدلة، أو باستخدام الصيغ للأعمدة المحسوبة.</p>
+    <p><b>Data Validation:</b> تقييد نوع/قيمة البيانات المُدخلة + إظهار رسالة خطأ أو رسالة إرشادية.</p>
+
+    <h2>٥) الفرز والتصفية</h2>
+    <ul>
+      <li><b>الفرز (Sort):</b> إعادة ترتيب الصفوف حسب محتوى عمود واحد أو أكثر — أمر Sort يظهر في قائمة Data.</li>
+      <li><b>التصفية (Filter):</b> إظهار السجلات المطابقة لمعيار معين وإخفاء الباقي — أمر Filter يظهر في قائمة Data.</li>
+      <li><b>التصفية المتقدمة:</b> تسمح بمعايير أكثر تعقيداً (أكثر من معيارين وعمود).</li>
+    </ul>
+
+    <h2>٦) الدوال الإحصائية الأساسية</h2>
+    <table class="ref">
+      <tr><th>الدالة</th><th>الوظيفة</th></tr>
+      <tr><td class="mono">SUM</td><td>مجموع القيم — تتجاهل النص والقيم المنطقية إن لم تُذكر مباشرة كوسيط</td></tr>
+      <tr><td class="mono">COUNT</td><td>عدد الخلايا التي تحتوي أرقاماً فقط</td></tr>
+      <tr><td class="mono">COUNTA</td><td>عدد الخلايا غير الفارغة (أرقام + نص + منطقية)</td></tr>
+      <tr><td class="mono">MIN / MAX</td><td>أصغر/أكبر قيمة رقمية (تتجاهل النص والمنطقية)</td></tr>
+      <tr><td class="mono">MINA / MAXA</td><td>كالسابق لكن تُدخل القيم المنطقية (TRUE=1, FALSE=0) في الحساب</td></tr>
+      <tr><td class="mono">AVERAGE</td><td>متوسط القيم الرقمية فقط</td></tr>
+      <tr><td class="mono">AVERAGEA</td><td>متوسط كل الخلايا غير الفارغة (تُحسب المنطقية والنص كـ0)</td></tr>
+      <tr><td class="mono">SUBTOTAL</td><td>مجموع فرعي — رقم الدالة 1-11 يشمل الصفوف المخفية، 101-111 يتجاهلها</td></tr>
+      <tr><td class="mono">INT</td><td>القيمة الصحيحة للناتج دون كسور</td></tr>
+      <tr><td class="mono">TODAY</td><td>تاريخ اليوم الحالي</td></tr>
+    </table>
+    <div class="note">في الدوال المنطقية: <b>TRUE = 1</b> و <b>FALSE = 0</b> عند إدخالها في عملية حسابية.</div>
+
+    <h2>٧) ترتيب العمليات الحسابية (أولوية التنفيذ)</h2>
+    <p class="mono" style="font-size:16px;display:block;text-align:center;background:var(--paper-2);padding:10px;border-radius:8px;">() → ^ → * / → + − → & (الضم) → المقارنة (= &lt; &gt;)</p>
+    <p>الأقواس أولاً، ثم الرفع لقوة، ثم الضرب والقسمة، ثم الجمع والطرح، ثم عمليات الضمّ (&)، وأخيراً المقارنة.</p>
+
+    <h2>٨) الدوال المالية</h2>
+    <table class="ref">
+      <tr><th>الدالة</th><th>الاستخدام</th><th>الصيغة</th></tr>
+      <tr><td class="mono">PV</td><td>القيمة الحالية — جدوى استثمار طويل الأجل، القيمة الحالية للتدفقات النقدية</td><td class="mono">PV(rate;nper;pmt;fv;type)</td></tr>
+      <tr><td class="mono">FV</td><td>القيمة المستقبلية لاستثمار معين، دفعات دورية ثابتة</td><td class="mono">FV(rate;nper;pmt;pv;type)</td></tr>
+      <tr><td class="mono">NPV</td><td>صافي القيمة الحالية — ربحية استثمار بمعدل خصم + دفعات مستقبلية</td><td class="mono">NPV(rate;value1;value2;...)</td></tr>
+    </table>
+    <ul>
+      <li><b>rate:</b> معدل الفائدة/الخصم لكل فترة زمنية.</li>
+      <li><b>nper:</b> عدد الدفعات/العوائد الدورية.</li>
+      <li><b>pmt:</b> قيمة الدفعة الدورية.</li>
+      <li><b>type:</b> 0 = الاستحقاق بنهاية الفترة (الافتراضي)، 1 = بداية الفترة.</li>
+    </ul>
+    <div class="note"><b>الاستثمار مربح</b> إذا كانت صافي القيمة الحالية (NPV) له <b>أكبر من الصفر</b>. يمكن استخدام أداة <b>Seek Goal</b> مع NPV لتحديد تكلفة الاستثمار أو معدل الخصم الذي يجعله مربحاً.</div>
+
+    <h2>٩) الأدوات التحليلية المتقدمة</h2>
+    <ul>
+      <li><b>الجداول المحورية PivotTable:</b> معلومات ملخّصة لحقول محددة من مصدر بيانات.</li>
+      <li><b>خط الاتجاه (Trendline):</b> يُستخدم للتنبؤ بقيم مستقبلية؛ كلما اقترب <b>معامل التحديد R²</b> من الواحد (1) زاد الاعتماد على خط الاتجاه.</li>
+      <li><b>Solver:</b> أداة إيجاد الحل الأمثل (أكبر ربح/أقل تكلفة) بتغيير قيم خلايا مرتبطة بخلية الهدف ضمن قيود محددة.</li>
+      <li><b>تحليل ماذا-إذا (What-If):</b> تقييم بدائل الحل عبر سيناريوهات مختلفة يمكن حفظها بأداة إدارة السيناريو.</li>
+      <li><b>تحليل الحساسية:</b> يوضّح مدى تأثّر الحل بتغيّرات طفيفة في متغيرات النموذج.</li>
+      <li><b>Chart:</b> تمثيل البيانات بشكل رسوم بيانية.</li>
+    </ul>
+    <div class="warn">ملاحظة: برنامج Excel <b>يمكن</b> استخدامه (بأدوات كـ Solver) في تحليلات إدارية متعددة، لكنه <b>لا</b> يُستخدم كأداة إدارة مشروع مباشرة (كـ MS Project)، وبرمجيات الحل الأمثل (Optimization) وظيفتها إيجاد أفضل قيمة لدالة هدف — وليست مراقبة جدولة المشاريع الضخمة.</div>
+  </div>`
+},
+{
+  id:'ch3', num:3,
+  title:'نظم إدارة قواعد البيانات (DBMS)',
+  short:'المفاهيم الأساسية',
+  html:`
+  <div class="sec">
+    <h2>١) قاعدة البيانات ونظام إدارتها</h2>
+    <p><b>قاعدة البيانات:</b> مجموعة من البيانات أو المعلومات المتصلة ذات العلاقات المتبادلة، مخزّنة بطريقة نموذجية دون تكرار.</p>
+    <p><b>نظام إدارة قواعد البيانات (DBMS):</b> حزمة برمجية جاهزة تمكّن من إنشاء قاعدة البيانات وإجراء التعديلات عليها، ومعالجة البيانات المخزنة للوصول إلى المعلومات المطلوبة.</p>
+    <p><b>الغرض الرئيسي</b> لنظام قاعدة البيانات المحوسب: تخزين البيانات والسماح للمستخدم باسترجاعها وتحديثها حسب حاجته.</p>
+    <div class="note">يتكون نظام المعلومات المؤتمت من: قاعدة البيانات + البرمجيات (DBMS) + التجهيزات المادية + المستخدمين.</div>
+
+    <h2>٢) مفاهيم قواعد البيانات الترابطية</h2>
+    <ul>
+      <li><b>الرابطة (Relation):</b> الجدول — تتضمن مجموعة أسطر (سجلات).</li>
+      <li><b>السجل (Record):</b> سطر واحد، ويتكون من مجموعة حقول (Fields).</li>
+      <li><b>التكامل (Integrated):</b> توزيع بيانات النظام على عدة ملفات مع المحافظة على الترابط بينها بأقل تكرار وحشو.</li>
+      <li><b>التشارك (Shared):</b> عنصر البيانات الواحد يُستخدم من قبل عدة مستخدمين في الوقت نفسه.</li>
+    </ul>
+
+    <h2>٣) وظائف ولغات نظام إدارة قواعد البيانات</h2>
+    <p>أهم الوظائف: تعريف الروابط، معالجة البيانات، الاستعلام، ضمان حماية البيانات ونزاهتها، ضمان استعادة البيانات، قاموس البيانات.</p>
+    <table class="ref">
+      <tr><th>اللغة</th><th>الاختصار</th><th>الوظيفة</th></tr>
+      <tr><td>لغة تعريف البيانات</td><td class="mono">DDL</td><td>تعريف وتوصيف الملفات والسجلات والحقول والعلاقات وشروط التكامل</td></tr>
+      <tr><td>لغة معالجة البيانات</td><td class="mono">DML</td><td>إضافة/حذف/تعديل سجلات، فتح وإغلاق ملفات، دمج وربط الملفات</td></tr>
+      <tr><td>لغة الاستعلام</td><td class="mono">SQL</td><td>استرجاع وتصنيف وترتيب مجموعات فرعية من البيانات للإجابة عن استعلام المستخدم</td></tr>
+    </table>
+    <div class="note"><b>قاموس البيانات (Data Dictionary):</b> يمكن فهمه على أنه قاعدة بيانات خاصة بالنظام نفسه (وليست بالمستخدم) — يخزّن مواصفات كل حقل من حقول قاعدة البيانات.</div>
+
+    <h2>٤) مستويات تصميم قاعدة البيانات (الثلاثة)</h2>
+    <table class="ref">
+      <tr><th>المستوى</th><th>الوصف</th></tr>
+      <tr><td><b>المنطقي (Logical)</b></td><td>بناء الجداول بما يتوافق مع حاجة كل المستخدمين إجمالاً؛ تحديد البيانات المطلوب تخزينها والعلاقات بين الملفات — أهم مرحلة عند بناء قاعدة البيانات.</td></tr>
+      <tr><td><b>الفيزيائي (Physical)</b></td><td>الأقل تجريداً — تحديد أماكن التخزين والفهارس، وصف السجلات وحجمها، تشفير البيانات، الأنواع الداخلية للبيانات.</td></tr>
+      <tr><td><b>الخارجي/المستخدم (External)</b></td><td>مستوى المستخدم المفرد (نهائي أو مبرمج) — يتطلب لغة معالجة بيانات (DML/SQL) لإجراء العمليات على الملفات.</td></tr>
+    </table>
+    <div class="note">التصميم المادي (Physical Design): تحويل تراكيب البيانات من نموذج البيانات إلى ملفات باستخدام لغة توصيف البيانات (DDL) — <b>وليس</b> التصميم المنطقي.</div>
+
+    <h2>٥) مستخدمو قاعدة البيانات</h2>
+    <ul>
+      <li><b>مدير قاعدة البيانات (DBA):</b> يحدد المتطلبات، يوفر الأمن والحماية، يعيد تنظيم القاعدة، يحدد صلاحيات المستخدمين.</li>
+      <li><b>مبرمجو التطبيقات:</b> يحوّلون التصميم إلى قاعدة فعلية، يصيغون نوافذ التخاطب والتقارير والنماذج.</li>
+      <li><b>المستخدمون النهائيون:</b> يتحاورون مع النظام عبر البرامج أو لغات كـ SQL (SELECT, INSERT, UPDATE, DELETE).</li>
+      <li><b>محلل النظم:</b> يحدد متطلبات المستخدم ويطوّر المواصفات المطلوبة لتحديد المطلوب من قاعدة البيانات.</li>
+    </ul>
+
+    <h2>٦) مزايا استخدام قواعد البيانات (مقابل نظم الملفات التقليدية)</h2>
+    <ul>
+      <li>استقلالية البرامج عن البيانات (تعديل الملفات لا يستوجب تعديل البرامج وبالعكس).</li>
+      <li>ندرة التكرار، أمن وسرية عالية، تكامل عالي ومتناسق.</li>
+      <li>سهولة الصيانة والاسترجاع، توفير نسخ احتياطية.</li>
+      <li>تمثيل العلاقات المعقدة بسهولة، واجهات متعددة للمستخدم.</li>
+    </ul>
+    <div class="warn">مساوئ نظم الملفات التقليدية (قبل DBMS): تكرار وحشو في البيانات، الملفات تابعة لبرنامج التطبيق، صعوبة إضافة تطبيقات جديدة، الرقابة على البيانات من اختصاص البرنامج نفسه فقط.</div>
+    <div class="note"><b>لا نستخدم قاعدة بيانات</b> إذا: كانت تكلفة الإعداد عالية نسبة لحجم المشروع، أو كانت البيانات بسيطة جداً، أو المشروع يحتاج سرعة استجابة قصوى، أو لا حاجة لبيئة متعددة المستخدمين.</div>
+
+    <h2>٧) أنواع نظم قواعد البيانات</h2>
+    <p>هرمية (Hierarchical) — شبكية (Network) — <b>ترابطية/علائقية (Relational)</b> وهي الأكثر انتشاراً واعتماداً في السوق، وتتميز بالبساطة والمرونة وسهولة العرض. تعتمد على مفهوم <b>الجداول والعلاقات</b>.</p>
+  </div>`
+},
+{
+  id:'ch4', num:4,
+  title:'نماذج تصميم قواعد البيانات (ERD / REA)',
+  short:'العلاقات والمفاتيح',
+  html:`
+  <div class="sec">
+    <h2>١) المفاتيح — سؤال امتحاني متكرر</h2>
+    <table class="ref">
+      <tr><th>المفتاح</th><th>التعريف</th></tr>
+      <tr><td><b>المفتاح الرئيسي (Primary Key)</b></td><td>حقل أو مجموعة حقول تُميّز كل سجل عن غيره؛ لا يتكرر ولا يُترك فارغاً (Null) — قاعدة الكيان المتكامل.</td></tr>
+      <tr><td><b>المفاتيح المرشحة (Candidate Keys)</b></td><td>كل الحقول المؤهلة لتكون مفتاحاً رئيسياً، تُحدد في مرحلة التصميم.</td></tr>
+      <tr><td><b>المفتاح الأجنبي (Foreign Key)</b></td><td>حقل في رابطة معينة يكون هو المفتاح الرئيسي في رابطة أخرى — يربط بها، وقيمه <b>يمكن أن تتكرر</b> حسب الحاجة.</td></tr>
+    </table>
+
+    <h2>٢) خصائص الرابطة (الجدول)</h2>
+    <ul>
+      <li>لا يجوز تكرار أحد الأسطر ضمن الرابطة.</li>
+      <li>أسطر الرابطة غير مرتّبة — تغيير ترتيبها لا يغيّر طبيعتها.</li>
+      <li>الصفات (الأعمدة) غير مرتبة، وقيمها <b>أحادية</b> (لا يجوز أكثر من قيمة بالحقل الواحد).</li>
+      <li><b>درجة الرابطة</b> = عدد الأعمدة (الصفات) المكوّنة لها.</li>
+    </ul>
+
+    <h2>٣) أنواع العلاقات بين الجداول</h2>
+    <table class="ref">
+      <tr><th>النوع</th><th>الرمز</th><th>مثال</th></tr>
+      <tr><td>واحد لواحد</td><td class="mono">1:1</td><td>Customer ↔ Account</td></tr>
+      <tr><td>واحد لمتعدد</td><td class="mono">1:N</td><td>Department ↔ Employee (القسم يضم عدة عاملين، والعامل بقسم واحد)</td></tr>
+      <tr><td>متعدد لمتعدد</td><td class="mono">M:N</td><td>Student ↔ Subject — تحتاج جدول وسيط</td></tr>
+    </table>
+    <div class="note">العلاقة بين جدولين تتم عبر: حقل <b>المفتاح الرئيسي</b> في الجدول الأول وحقل <b>المفتاح الأجنبي</b> في الجدول الثاني.</div>
+
+    <h2>٤) العمليات على المجموعات (الروابط)</h2>
+    <table class="ref">
+      <tr><th>العملية</th><th>الشرط</th><th>النتيجة</th></tr>
+      <tr><td>الاجتماع UNION</td><td>الرابطتان بنفس الأعمدة</td><td>رابطة جديدة تضم كل الأسطر (المشتركة + الباقي من كل رابطة)</td></tr>
+      <tr><td>التقاطع INTERSECTION</td><td>نفس الأعمدة</td><td>الأسطر المشتركة فقط بين A و B</td></tr>
+      <tr><td>الفرق A-B (DIFFERENCE)</td><td>نفس الأعمدة</td><td>الأسطر الموجودة في A وغير موجودة في B</td></tr>
+    </table>
+    <h3>العمليات الخاصة بالروابط</h3>
+    <ul>
+      <li><b>الوصل (Join):</b> دمج رابطتين لهما عمود مشترك في رابطة جديدة.</li>
+      <li><b>الانتقاء (Restriction):</b> اختيار الأسطر التي تحقق شرطاً معيناً من رابطة موجودة.</li>
+      <li><b>الإسقاط (Projection):</b> اختزال الرابطة لتحتوي فقط على الأعمدة (الصفات) المرغوبة.</li>
+    </ul>
+
+    <h2>٥) نموذج الكيان-العلاقة (ERM / ERD)</h2>
+    <p>أقدم وأهم تقنية لتصميم وتوثيق قواعد البيانات — <b>Entity-Relationship Model</b>.</p>
+    <ul>
+      <li><b>الكيان (Entity):</b> شيء مادي أو مجرد له أهمية للمنظمة (عميل، منتج، عامل، حساب).</li>
+      <li><b>العلاقات (Relationships):</b> الروابط المنطقية بين نماذج الكيانات.</li>
+      <li><b>الصفات (Attributes):</b> مجموعة الخواص التي تصف الكيان.</li>
+      <li><b>الظاهرة (Domain):</b> مجموعة القيم التي تأخذها صفة معينة.</li>
+    </ul>
+    <h3>درجة العلاقة</h3>
+    <ul>
+      <li><b>الحد الأدنى:</b> 0 (قد لا يرتبط عنصر بأي عنصر آخر) أو 1 (كل عنصر مرتبط بعنصر واحد على الأقل).</li>
+      <li><b>الحد الأعلى:</b> 1 أو N — تحدد نمط العلاقة (1:1, 1:N, M:N).</li>
+    </ul>
+    <div class="warn"><b>تنبيه:</b> "الاستقلالية" تعني عدم وجود تأثير للبرامج والنظم الفرعية على تراكيب البيانات — أي أن التعديلات في الاستخدامات والبرامج <b>لا يجب</b> أن تؤدي إلى تغيير تراكيب البيانات (وليس العكس).</div>
+
+    <h2>٦) نموذج الموارد-الأحداث-الوكلاء (REA)</h2>
+    <p><b>REA</b> ينظر إلى المنظمة كمكوّنة من ثلاثة أنماط كيانات:</p>
+    <ul>
+      <li><b>الموارد (Resources):</b> أشياء لها قيمة اقتصادية.</li>
+      <li><b>الأحداث (Events):</b> أنشطة المنظمة المختلفة.</li>
+      <li><b>الوكلاء (Agents):</b> الأشخاص والمنظمات.</li>
+    </ul>
+    <h3>قواعد العلاقات في REA</h3>
+    <ul>
+      <li>كل حدث يجب أن يتصل بعلاقة مع <b>مورد واحد</b> على الأقل.</li>
+      <li>كل حدث يجب أن يتصل بعلاقة مع <b>حدث واحد</b> على الأقل.</li>
+      <li>كل حدث يجب أن يتصل بعلاقة مع <b>وكيلين</b> على الأقل.</li>
+    </ul>
+    <div class="note">العلاقة بين الوكيل والحدث دوماً <span class="mono">1:N</span> — بين الموظف وطلب البيع <span class="mono">0:N</span> — بين المخزون (مورد) وطلب العميل (حدث) <span class="mono">M:N</span>.</div>
+  </div>`
+},
+{
+  id:'ch5', num:5,
+  title:'Access — الجداول، الاستعلامات، النماذج والتقارير',
+  short:'التطبيق العملي',
+  html:`
+  <div class="sec">
+    <h2>١) أساسيات Access</h2>
+    <ul>
+      <li>امتداد ملفات Access: <span class="mono">.accdb</span></li>
+      <li>إن لم يُحدَّد مفتاح رئيسي، ينشئ Access تلقائياً حقلاً باسم "المعرّف" بنوع "ترقيم تلقائي".</li>
+      <li>النص المختصر (Short Text): حتى <b>255</b> حرفاً كحد أقصى.</li>
+      <li>ملف Access الواحد يمكن أن يحتوي على <b>أكثر من جدول</b>.</li>
+    </ul>
+
+    <h2>٢) العلاقات والتكامل المرجعي</h2>
+    <p>أساس علاقة الجدول هو تناظر القيم بين حقول المفاتيح (الرئيسي في جدول والأجنبي في آخر).</p>
+    <div class="note"><b>التكامل المرجعي (Referential Integrity):</b> يمنع السجلات المعزولة ويحافظ على تزامن المراجع. بعد فرضه، <b>يرفض Access</b> أي عملية تنتهك علاقة الجدول (مثل حذف سجل رئيسي مرتبط بسجلات فرعية، دون تفعيل التتالي).</div>
+    <table class="ref">
+      <tr><th>الخيار</th><th>الأثر عند تفعيله</th></tr>
+      <tr><td>تتالي تحديث الحقول المرتبطة</td><td>تحديث المفتاح الرئيسي يحدّث تلقائياً كل الحقول المرتبطة به في الجداول الأخرى</td></tr>
+      <tr><td>تتالي حذف السجلات المرتبطة</td><td>حذف سجل من جانب المفتاح الرئيسي يحذف تلقائياً كل السجلات المرتبطة به</td></tr>
+    </table>
+
+    <h2>٣) الاستعلامات (Queries)</h2>
+    <p>طريقتان لإنشائها: <b>عرض التصميم (Design View)</b> أو <b>SQL</b>.</p>
+    <table class="ref">
+      <tr><th>النوع</th><th>الوظيفة</th></tr>
+      <tr><td><b>استعلامات التحديد (Select)</b></td><td>الأكثر شيوعاً — استعادة بيانات من جدول أو إجراء حسابات، لا تُعدّل مصدر البيانات فعلياً وتعرض النتائج دوماً محدّثة.</td></tr>
+      <tr><td><b>استعلامات إجرائية</b></td><td>الحذف، الإضافة، التحديث — تُجري تغييرات فعلية على السجلات.</td></tr>
+      <tr><td><b>استعلام المعلمات (Parameter)</b></td><td>يعرض مربع حوار يطلب من المستخدم معلومات تُعامل كمعايير بحث، دون تعديل نص الاستعلام.</td></tr>
+      <tr><td><b>استعلامات التوحيد (Union)</b></td><td>تضم حقولاً من جدولين/استعلامين أو أكثر في نتيجة واحدة.</td></tr>
+    </table>
+    <h3>بنية استعلام SQL أساسي</h3>
+    <p class="mono" style="display:block;background:var(--paper-2);padding:10px 14px;border-radius:8px;">SELECT حقل1, حقل2 FROM الجدول WHERE شرط ORDER BY حقل;</p>
+    <ul>
+      <li><span class="mono">DISTINCT</span> — لحذف النتائج المكررة بعد SELECT.</li>
+      <li><span class="mono">ORDER BY</span> — لترتيب السجلات وفق معيار محدد.</li>
+      <li><span class="mono">GROUP BY</span> — لضمّ السجلات ذات القيم المتماثلة، غالباً مع دالة حسابية.</li>
+      <li><span class="mono">HAVING</span> — لتحديد شرط على السجلات <b>المجمّعة</b> بواسطة GROUP BY (بعد التجميع).</li>
+      <li><span class="mono">BETWEEN...AND</span> — قيمة ضمن نطاق محدد.</li>
+      <li><span class="mono">LIKE</span> — مقارنة سلسلة محارف بعامل بحث (يُستخدم مع #, *, ?).</li>
+      <li><span class="mono">IN</span> — القيمة تساوي إحدى القيم في قائمة محددة.</li>
+    </ul>
+
+    <h2>٤) طرق الوصل بين الجداول (JOIN)</h2>
+    <table class="ref">
+      <tr><th>النوع</th><th>النتيجة</th></tr>
+      <tr><td class="mono">INNER JOIN</td><td>السجلات المتطابقة فقط بين الجدولين (قيمة مشتركة بالحقل المشترك)</td></tr>
+      <tr><td class="mono">LEFT JOIN</td><td>كل سجلات الجدول الأول + المطابقة فقط من الجدول الثاني</td></tr>
+      <tr><td class="mono">RIGHT JOIN</td><td>كل سجلات الجدول الثاني + المطابقة فقط من الجدول الأول</td></tr>
+    </table>
+    <div class="note">عند عدم وجود حقل مشترك بين جدولين نريد ربطهما، نضيف <b>جدولاً وسيطاً</b> يعمل كمعبر بينهما (غالباً في علاقات M:N).</div>
+
+    <h2>٥) النماذج (Forms) والتقارير (Reports)</h2>
+    <ul>
+      <li><b>نموذج مرتبط:</b> متصل مباشرة بمصدر بيانات (جدول/استعلام).</li>
+      <li><b>نموذج غير مرتبط:</b> لا يرتبط بمصدر بيانات، يحوي أزرار/عناصر تحكم فقط.</li>
+      <li><b>نموذج منقسم:</b> يمنح طريقتي عرض (نموذج + ورقة بيانات) لمصدر البيانات نفسه في آن واحد.</li>
+      <li><b>نموذج فرعي:</b> نموذج مضمّن داخل نموذج رئيسي — مفيد لعرض علاقة واحد لمتعدد.</li>
+    </ul>
+    <table class="ref">
+      <tr><th>طريقة العرض</th><th>الاستخدام</th></tr>
+      <tr><td>عرض التخطيط (Layout)</td><td>الأكثر بديهية للتعديل — النموذج يعمل فعلياً فترى البيانات الحقيقية أثناء التعديل</td></tr>
+      <tr><td>عرض التصميم (Design)</td><td>أكثر تفصيلاً لبنية النموذج (رأس/تفصيل/تذييل) — لا يعمل النموذج فعلياً أثناء التعديل</td></tr>
+    </table>
+    <p><b>عناصر التحكم:</b> <span class="mono">منضم</span> (مصدره حقل من جدول/استعلام) — <span class="mono">غير منضم</span> (لا مصدر بيانات، كالتسميات) — <span class="mono">محسوب</span> (مصدره تعبير/معادلة).</p>
+    <h3>مقاطع التقرير</h3>
+    <table class="ref">
+      <tr><th>المقطع</th><th>يظهر</th></tr>
+      <tr><td>رأس التقرير</td><td>مرة واحدة في بداية التقرير (عنوان، شعار، تاريخ)</td></tr>
+      <tr><td>رأس الصفحة</td><td>في أعلى كل صفحة</td></tr>
+      <tr><td>رأس المجموعة</td><td>في بداية كل مجموعة سجلات جديدة</td></tr>
+      <tr><td>التفصيل</td><td>مرة واحدة لكل صف/سجل</td></tr>
+      <tr><td>تذييل المجموعة / الصفحة / التقرير</td><td>ملخصات ومجاميع في نهاية كل مستوى</td></tr>
+    </table>
+  </div>`
+}
+];
+
+// ============ QUESTION BANK (from the two uploaded question-bank files) ============
+// each question: {t:'mcq', q, o:[options], a:correctIndex, ex:explanation}  or {t:'text', q, a:'exact', ex}
+const BANK = {};
+
+BANK.ch1 = [
+{t:'mcq', q:'تطبيقات الحاسوب في الإدارة هي:', o:['أجهزة حاسوب متطورة فقط للمكاتب','برمجيات حاسوبية تساعد المستخدمين والمديرين في ممارسة وظائفهم الإدارية','برامج ترفيهية للموظفين','شبكات اتصال بين الفروع فقط'], a:1, ex:'تطبيقات الحاسوب في الإدارة = برمجيات تساعد المستخدمين والمديرين في ممارسة وظائفهم الإدارية.'},
+{t:'mcq', q:'الأوامر: ملف - تحرير - عرض - إدراج - تنسيق، تقع ضمن:', o:['شريط الأدوات','شريط القوائم','شريط الصيغة','شريط الحالة'], a:1, ex:'هذه الأوامر الأساسية تنتمي إلى شريط القوائم (Menu Bar).'},
+{t:'mcq', q:'تُعدّ بحوث تعلّم الآلة (Machine Learning) من:', o:['نظام التشغيل','برامج التنقيب في البيانات (Data Mining)','المترجمات','الأدوات المساعدة'], a:1, ex:'تعلّم الآلة يندرج ضمن برامج التنقيب في البيانات، وهي من تطبيقات البرمجيات المتقدمة.'},
+{t:'mcq', q:'يُعتبر برنامجا Excel و Access من تطبيقات:', o:['النشر المكتبي','قواعد البيانات','الوسائط المتعددة','التطبيقات العلمية'], a:1, ex:'Excel وAccess كلاهما من التطبيقات المرتبطة بمعالجة وتنظيم قواعد البيانات.'},
+{t:'mcq', q:'لا يمكن استخدام برنامج Excel في مجال إدارة المشروع بشكل مباشر — هذه العبارة:', o:['صحيحة','خاطئة'], a:1, ex:'العبارة خاطئة: يمكن الاستفادة من أدوات Excel (كالجدولة والحسابات وSolver) في جوانب من إدارة المشاريع، ولو أنه ليس أداة إدارة مشاريع متخصصة.'},
+{t:'mcq', q:'المتطلبات الأساسية لبيئة المكتب الحديثة تشمل جميع ما يلي ما عدا:', o:['تقليل تكلفة المصروفات الإدارية','زيادة كفاءة المهام المكتبية','تقديم أسرع طريقة للاتصال','زيادة الاعتماد على الأرشفة الورقية فقط'], a:3, ex:'الاتجاه الحديث في أتمتة المكاتب يقلل الاعتماد على الأرشفة الورقية لصالح الأرشفة الرقمية المنظمة.'},
+{t:'mcq', q:'من الوظائف الأساسية لأتمتة أي مكتب:', o:['إنشاء المستندات ومعالجتها وتوزيعها وأرشفتها','بيع المنتجات مباشرة للعملاء','تصنيع الأجهزة الإلكترونية','إدارة حركة الملاحة الجوية فقط'], a:0, ex:'الوظائف الأربع الأساسية لأتمتة المكتب: إنشاء، معالجة، توزيع، وأرشفة المستندات.'},
+{t:'mcq', q:'الحواسيب المصنّفة "خاصة الأغراض" تُستخدم في:', o:['تشغيل مجموعة كبيرة ومتنوعة من التطبيقات المكتبية','تطبيق واحد محدد كتوجيه الطائرات أو الصواريخ','معالجة النصوص فقط','التصفح على الإنترنت فقط'], a:1, ex:'الحواسيب خاصة الأغراض مصممة لتنفيذ وظيفة محددة (توجيه طائرات، أقمار صناعية، مراقبة تصنيع...).'},
+{t:'mcq', q:'العيب الرئيسي للحاسوب مقارنة بالإنسان هو:', o:['بطء السرعة','عدم الدقة','عدم الذكاء الخاص به','الحاجة للراحة والنوم'], a:2, ex:'الحاسوب آلة سريعة ودقيقة ولا تتعب، لكنه لا يملك ذكاءً ذاتياً كالإنسان — وهذا عيبه الرئيسي.'},
+{t:'mcq', q:'المفسّر (Interpreter) يختلف عن المترجم (Compiler) في أنّ:', o:['المفسّر ينفّذ تعليمة تلو تعليمة ولا يُنتج برنامج كائن منفصل، بعكس المترجم','المترجم أبطأ من المفسّر دائماً','المفسّر يُستخدم فقط في لغة الأسمبلي','لا يوجد فرق جوهري بينهما'], a:0, ex:'المفسّر يترجم وينفّذ تعليمة بتعليمة دون إنتاج ملف كائن، أما المترجم فيترجم البرنامج كاملاً مرة واحدة وينتج برنامج كائن قابل للتنفيذ المباشر.'},
+];
+
+BANK.ch2 = [
+{t:'mcq', q:'أمر Sort يظهر في:', o:['قائمة Data','قائمة View','قائمة Insert','قائمة Home فقط'], a:0, ex:'أمر Sort موجود ضمن قائمة Data (البيانات).'},
+{t:'mcq', q:'أمر Filter يظهر في:', o:['قائمة Data','قائمة Format','قائمة Review','قائمة References'], a:0, ex:'أمر Filter (التصفية) موجود ضمن قائمة Data تماماً مثل Sort.'},
+{t:'mcq', q:'يُفترض في "حالة التأكد" (Certainty) عند بناء نماذج الحل الأمثل أن تكون:', o:['بعض البيانات فقط معروفة الدرجة','جميع البيانات درجة التأكد منها كاملة','لا حاجة لأي بيانات','الاعتماد على التقدير التقريبي فقط'], a:1, ex:'حالة التأكد تعني أن كل البيانات معروفة ومؤكدة بالكامل دون أي هامش شك.'},
+{t:'mcq', q:'من الشروط الواجب توافرها في قاعدة بيانات Excel:', o:['تخصيص السطر الأول لأسماء الحقول','عدم ترك أعمدة أو أسطر فارغة','أن يحتوي كل عمود على نفس نوع البيانات','كل الخيارات صحيحة'], a:3, ex:'كل هذه الشروط مطلوبة معاً لبناء قاعدة بيانات سليمة في Excel.'},
+{t:'mcq', q:'للحصول على أرقام أو تواريخ متسلسلة تلقائياً في Excel نستخدم:', o:['خيار Auto Fill','خيار Data Validation','خيار Freeze Panes','خيار Conditional Formatting'], a:0, ex:'التعبئة التلقائية Auto Fill تُنتج سلاسل أرقام أو تواريخ متتالية بسحب مقبض التعبئة.'},
+{t:'mcq', q:'تكون الدالة صحيحة إذا كانت عملياتها مرتّبة بـ:', o:['إشارة يساوي، ثم الدالة، ثم القوس (بهذا الترتيب تماماً)','القوس، ثم الدالة، ثم إشارة يساوي','الدالة فقط دون أي رموز أخرى','لا يوجد ترتيب محدد'], a:0, ex:'الترتيب الصحيح إلزامي: = ثم اسم الدالة ثم القوس، وهذا الترتيب هو الأهم في الإجابة.'},
+{t:'mcq', q:'تكون الخلية "نشطة" (Active Cell) في Excel عندما:', o:['تكون محاطة بإطار أسود سميك','تكون ملوّنة باللون الأصفر','تحتوي على دالة','تكون في العمود الأول فقط'], a:0, ex:'علامة الخلية النشطة هي الإطار الأسود السميك المحيط بها.'},
+{t:'mcq', q:'يتبيّن محتوى الخلية والعمليات الجارية خلالها من خلال:', o:['شريط الحالة','شريط الصيغة','مربع الاسم','شريط العنوان'], a:1, ex:'شريط الصيغة (Formula Bar) يُظهر محتوى الخلية المحددة فعلياً وليس فقط نتيجتها.'},
+{t:'mcq', q:'لمعرفة ربحية استثمار معيّن باستخدام معدل الخصم وسلسلة من الدفعات المستقبلية، نستخدم دالة:', o:['PV','FV','NPV','INT'], a:2, ex:'NPV تحسب صافي القيمة الحالية بالاعتماد على معدل خصم وسلسلة تدفقات (دفعات وإيرادات).'},
+{t:'mcq', q:'لمعرفة القيمة المستقبلية لاستثمار معيّن نستخدم دالة:', o:['PV','FV','NPV','SUBTOTAL'], a:1, ex:'FV = Future Value، تحسب القيمة المستقبلية لاستثمار بدفعات دورية ثابتة ومعدل فائدة ثابت.'},
+{t:'mcq', q:'لمعرفة جدوى استثمار طويل الأجل والقيمة الحالية للتدفقات النقدية من بديل استثماري معين نستخدم دالة:', o:['PV','FV','NPV','COUNT'], a:0, ex:'PV = Present Value، تُحسب بها القيمة الحالية للتدفقات النقدية المستقبلية.'},
+{t:'mcq', q:'الفرق بين "حفظ" و"حفظ باسم" هو أنّ "حفظ باسم":', o:['يحذف الملف الأصلي نهائياً','يحفظ الملف بنسخة إضافية جديدة','يُغلق البرنامج تلقائياً','لا فرق بينهما'], a:1, ex:'"حفظ باسم" (Save As) يُنشئ نسخة إضافية من الملف باسم أو مسار جديد، بخلاف "حفظ" (Save) التي تحفظ فوق الملف الحالي.'},
+{t:'mcq', q:'في جدول بيانات Excel، حقول الأسماء (Field Names) تكون في:', o:['السطر الأول','العمود الأول','آخر سطر','لا تحديد معيّن'], a:0, ex:'أسماء الحقول يجب أن تكون دوماً في السطر الأول من قاعدة البيانات.'},
+{t:'mcq', q:'التغيّر الذي سيحصل في الخلية عند نسخ الصيغة <span class="mono">$A$2+A1</span> إلى خلية أخرى:', o:['يتغيّر A1 فقط','يتغيّر $A$2 فقط','يتغيّر كلاهما','لا يتغيّر أي منهما'], a:0, ex:'$A$2 مرجع مطلق (ثابت تماماً)، أما A1 فمرجع نسبي يتغيّر تلقائياً عند النسخ أو النقل.'},
+{t:'mcq', q:'إذا وُضعت إشارة $ قبل العمود فقط أو قبل السطر فقط، يكون المرجع:', o:['نسبي','مطلق','مختلط','غير صالح'], a:2, ex:'تثبيت أحد الاثنين (العمود أو السطر) فقط دون الآخر يُنتج مرجعاً مختلطاً.'},
+{t:'mcq', q:'إذا وُضعت إشارة $ قبل العمود وقبل السطر معاً، يكون المرجع:', o:['نسبي','مطلق','مختلط','خاطئ'], a:1, ex:'تثبيت العمود والسطر معاً بعلامتَي $ يجعل المرجع مطلقاً بالكامل: مثل $A$1.'},
+{t:'mcq', q:'يتغيّر عنوان الخلية "الـ ......." في حال نقلها إلى خلية أخرى (بالتعبئة التلقائية):', o:['النسبي','المطلق','المختلط بالكامل','لا شيء يتغيّر'], a:0, ex:'المرجع النسبي هو الذي يتغيّر تلقائياً تبعاً لموضع الخلية الجديد.'},
+{t:'mcq', q:'ماذا يعني الرمز <span class="mono">#</span> في خلية Excel؟', o:['حروف وأرقام لا تتّسع في عرض الخلية','خطأ في الصيغة دائماً','قيمة فارغة','رقم عشري'], a:0, ex:'ظهور # يعني أن عرض الخلية غير كافٍ لعرض المحتوى (أرقام/تواريخ) وليس بالضرورة خطأً حسابياً.'},
+{t:'mcq', q:'ماذا يعني الرمز <span class="mono">*</span> في البحث/التصفية النصية؟', o:['حرف واحد فقط','حروف وأرقام مجهولة بعدد غير محدد','نهاية النص','رقم عشري فقط'], a:1, ex:'* يمثل عدداً غير محدد من الحروف/الأرقام المجهولة.'},
+{t:'mcq', q:'ماذا يعني الرمز <span class="mono">?</span> في البحث/التصفية النصية؟', o:['حرف أو رقم مجهول واحد فقط','عدد غير محدد من الحروف','نهاية الملف','لا شيء'], a:0, ex:'? يمثل حرفاً أو رقماً مجهولاً واحداً بالضبط، بعكس * التي تمثل عدداً غير محدد.'},
+{t:'mcq', q:'الخلية الواقعة في العمود الأول والسطر الخامس تُسمّى:', o:['A5','1E','5A مقلوبة بلا معنى','E1'], a:0, ex:'التسمية الصحيحة تبدأ بحرف العمود ثم رقم السطر: A5.'},
+{t:'mcq', q:'الخلية E12 تمثل:', o:['السطر 12 والعمود 5 (E)','السطر 5 والعمود 12','العمود A والسطر 12','لا معنى محدد'], a:0, ex:'E هو العمود الخامس، و12 هو رقم السطر، فتمثل الخلية: السطر 12 من العمود E (الخامس).'},
+{t:'mcq', q:'دالة تُظهر تاريخ اليوم الحالي:', o:['NOW فقط','TODAY','DATE','TIME'], a:1, ex:'=TODAY() تُظهر تاريخ اليوم الحالي فقط دون الوقت.'},
+{t:'mcq', q:'يبدأ تاريخ Excel في:', o:['1900/1/1 ويأخذ القيمة صفر','1900/1/1 ويأخذ القيمة 1','2000/1/1 ويأخذ القيمة 1','1970/1/1'], a:1, ex:'أول تاريخ في نظام Excel هو 1900/1/1 وقيمته الرقمية (Serial Number) هي 1.'},
+{t:'mcq', q:'ينتهي مدى التاريخ في Excel في عام:', o:['2100','2999','9999','لا نهاية محددة'], a:2, ex:'أقصى تاريخ يقبله Excel هو 31/12/9999.'},
+{t:'mcq', q:'يعمل الرسم البياني (Chart) على:', o:['حذف البيانات المكررة','تمثيل البيانات بشكل رسوم بيانية','فرز البيانات أبجدياً فقط','تشفير الملف'], a:1, ex:'Chart أداة لتمثيل البيانات الرقمية بصرياً (أعمدة، خطوط، دائرية...).'},
+{t:'mcq', q:'يُستخدم لإظهار البيانات المطابقة لمعيار معيّن وإخفاء باقي البيانات:', o:['Sort','Filter','Chart','Validation'], a:1, ex:'Filter (التصفية) تُظهر فقط السجلات المطابقة للمعيار وتُخفي غيرها دون حذفها.'},
+{t:'mcq', q:'من وسائط دالة IF: logical_test، value_if_true، value_if_false. أيّ الوسائط التالية غير موجود أساساً في الدالة؟', o:['logical_test','value_if_true','value_if_false','Certain'], a:3, ex:'دالة IF تحتوي فقط الوسائط الثلاثة: شرط منطقي، القيمة عند التحقق، القيمة عند عدم التحقق — لا يوجد وسيط باسم Certain.'},
+{t:'mcq', q:'من طرق إدخال البيانات إلى قاعدة بيانات Excel:', o:['الإدخال المباشر من لوحة المفاتيح','من خلال نافذة نموذج Form','باستخدام الصيغ للأعمدة المحسوبة','كل الخيارات صحيحة'], a:3, ex:'كل هذه الطرق الأربع مذكورة كطرق صحيحة لإدخال البيانات.'},
+{t:'mcq', q:'ما نتيجة العملية: <span class="mono">=4=3+1*1</span> ؟', o:['True','False','خطأ في الصيغة','4'], a:0, ex:'1*1=1، ثم 3+1=4، ثم 4=4 → الناتج True.'},
+{t:'mcq', q:'الأداة التي تُستخدم لإيجاد الحل الأمثل (أعظم ربح أو أقل تكلفة):', o:['Goal Seek','Solver','PivotTable','Data Validation'], a:1, ex:'Solver تصل لقيمة مثلى بصيغة خلية الهدف من خلال تغيير قيم خلايا مرتبطة وفق قيود محددة.'},
+{t:'mcq', q:'نقول عن استثمار أنّه "مربح" إذا كان:', o:['صافي قيمته الحالية (NPV) أكبر من الصفر','صافي قيمته الحالية أصغر من الصفر','القيمة المستقبلية له سالبة','معدل الخصم فيه يساوي صفراً دائماً'], a:0, ex:'الاستثمار يُعتبر مربحاً حين تكون NPV > 0.'},
+{t:'mcq', q:'لعمل قاعدة بيانات في Excel ضمن نفس ورقة العمل التي تحوي بيانات أخرى، يجب:', o:['حذف البيانات الأخرى نهائياً','ترك سطر وعمود فارغين للفصل بينهما','دمج كل الخلايا','لا حاجة لأي إجراء'], a:1, ex:'يُفضّل تخصيص ورقة مستقلة، وإن تعذّر ذلك يجب الفصل بسطر وعمود فارغين.'},
+{t:'mcq', q:'التصفية التلقائية (AutoFilter) تُستخدم للبحث عن البيانات ضمن معيار عبر أمر:', o:['Sort','Filter','Format','Validate'], a:1, ex:'AutoFilter هي أحد أنواع أمر Filter في قائمة Data.'},
+{t:'mcq', q:'أداة Data Validation تفيد في:', o:['تلوين الخلايا فقط','التحقق من صحة إدخال البيانات نوعاً وقيمة','دمج الخلايا','حذف الصفوف المكررة'], a:1, ex:'Data Validation تُقيّد نوع وقيمة البيانات المسموح إدخالها، وتُظهر رسائل تنبيه أو إرشاد.'},
+{t:'mcq', q:'الصيغة <span class="mono">$E$1+$C$2</span> تحتوي على مرجع:', o:['نسبي','مطلق','مختلط','غير صحيح'], a:1, ex:'كلا الطرفين مثبتان بالكامل ($ قبل الحرف وقبل الرقم) → مرجع مطلق.'},
+{t:'mcq', q:'ترتيب أولوية العمليات الحسابية الصحيح في Excel:', o:['الأقواس ← الرفع لقوة ← الضرب والقسمة ← الجمع والطرح ← عمليات الضم (&) ← المقارنة','الجمع والطرح أولاً ثم الأقواس','عمليات المقارنة أولاً ثم الأقواس','لا يوجد ترتيب ثابت'], a:0, ex:'هذا هو الترتيب الرسمي والمهم جداً بامتحانات هذه المادة.'},
+{t:'mcq', q:'عند حساب عملية منطقية نتيجتها TRUE ضمن عملية حسابية، فإنها تأخذ القيمة:', o:['1','0','لا قيمة رقمية لها','100'], a:0, ex:'TRUE تُعامَل كـ1 وFALSE كـ0 عند استخدامها داخل عملية حسابية.'},
+{t:'mcq', q:'كيف نجعل مرجع الخلية B2 ذا عمود مطلق وسطر نسبي؟', o:['B$2','$B2','$B$2','B2$'], a:1, ex:'لتثبيت العمود B فقط (وترك السطر نسبياً) تُوضع $ قبل الحرف مباشرة: $B2.'},
+{t:'mcq', q:'من أنواع مراجع الصيغ في Excel:', o:['النسبي فقط','المطلق فقط','النسبي + المطلق + المختلط','لا يوجد تصنيف'], a:2, ex:'ثلاثة أنواع للمراجع: نسبي، مطلق، مختلط.'},
+{t:'text', q:'ما نتيجة الصيغة: <span class="mono">=1&(11*1/1)&11</span> ؟ (اكتب الناتج كسلسلة أرقام متصلة)', a:'11111', ex:'11*1/1 = 11، وبالضمّ (&): "1" & "11" & "11" = "11111".'},
+{t:'mcq', q:'ما نتيجة: <span class="mono">=(-2/2*4)/(-4)</span> ؟', o:['1','-1','2','4'], a:0, ex:'‎-2/2 = -1، ‎-1×4 = -4، ثم (-4)/(-4) = 1.'},
+{t:'mcq', q:'ما نتيجة: <span class="mono">=IF(3*3=9/2,"",0)+11</span> — أي: 11 مضافاً إلى نتيجة الشرط (3*3=9/2) بوصفها 1 أو 0؟', o:['11','12','0','21'], a:0, ex:'3*3=9، و9/2=4.5، وبالتالي 9=4.5 → False = 0. فيكون الناتج 0+11 = 11.'},
+{t:'mcq', q:'ما نتيجة: 11 مضافاً إلى نتيجة الشرط (3*3=9) بوصفه True/False؟', o:['11','12','9','0'], a:1, ex:'3*3=9 → 9=9 صحيح → True = 1. فيكون الناتج 1+11 = 12.'},
+{t:'mcq', q:'ما نتيجة: 79 مضافاً إلى نتيجة الشرط (100-79=21)؟', o:['79','80','21','100'], a:1, ex:'100-79=21، و21=21 صحيح → True=1، فيكون الناتج 1+79=80.'},
+{t:'mcq', q:'ما نتيجة العملية: <span class="mono">=8+8/4</span> ؟', o:['4','10','16','2'], a:1, ex:'حسب أولوية العمليات: 8/4=2 أولاً، ثم 8+2=10.'},
+{t:'text', q:'ما نتيجة الصيغة: <span class="mono">=10&(1+10)</span> ؟ (اكتب الناتج كسلسلة متصلة)', a:'1011', ex:'يُحسب الجمع أولاً: 1+10=11، ثم الضمّ: "10" & "11" = "1011".'},
+{t:'mcq', q:'ما نتيجة: <span class="mono">=(4=8/4)</span> ؟', o:['True','False','4','2'], a:1, ex:'8/4=2، و4=2 غير صحيح → الناتج False.'},
+{t:'mcq', q:'ما نتيجة: <span class="mono">=(4=8/2)</span> ؟', o:['True','False','8','2'], a:0, ex:'8/2=4، و4=4 صحيح → الناتج True.'},
+{t:'mcq', q:'ما نتيجة العملية: <span class="mono">=8+232/2</span> ؟', o:['120','124','116','240'], a:1, ex:'232/2=116 أولاً حسب الأولوية، ثم 8+116=124.'},
+{t:'mcq', q:'ما نتيجة العملية: <span class="mono">=17-1+4/4</span> ؟', o:['16','17','20','4'], a:1, ex:'4/4=1 أولاً، ثم 17-1+1=17.'},
+{t:'mcq', q:'لدينا العمود A: A1="أحمد"(نص)، A2=‎-5، A3=20، A4=25، A5=TRUE، A6=فارغة، A7=TRUE، A8=FALSE. ما نتيجة <span class="mono">=SUM(A1:A5)</span> ؟', o:['40','41','65','45'], a:0, ex:'SUM ضمن نطاق يتجاهل النص والقيم المنطقية: -5+20+25 = 40.'},
+{t:'mcq', q:'(تابع الجدول السابق) الناتج 40 هو حصيلة الصيغة الصحيحة:', o:['SUM(A1,A5)','SUM(A1;A5)','SUM(A1:A5)','SUM(A1.A5)'], a:2, ex:'النطاق المتصل بين خليتين يُكتب بنقطتين رأسيتين : بين الخليتين، وليس بفاصلة أو نقطة.'},
+{t:'mcq', q:'ما نتيجة <span class="mono">=SUM(A1:A5,60)</span> ؟', o:['100','40','60','160'], a:0, ex:'40 (نتيجة النطاق) + 60 (المضافة مباشرة) = 100.'},
+{t:'mcq', q:'ما نتيجة <span class="mono">=SUM(A1:A5,TRUE)</span> ؟', o:['40','41','1','45'], a:1, ex:'40 (النطاق) + 1 (TRUE المُدرجة مباشرة كوسيط تُحسب فعلياً) = 41.'},
+{t:'mcq', q:'ما نتيجة <span class="mono">=SUM(A1:A8,TRUE)</span> ؟', o:['40','41','42','65'], a:1, ex:'SUM(A1:A8) داخل النطاق = 40 (تتجاهل A5,A7,A8 المنطقية)، + TRUE المباشرة = 1 → المجموع 41.'},
+{t:'mcq', q:'ما نتيجة <span class="mono">=SUM(A1:A8,FALSE)</span> ؟', o:['40','41','39','0'], a:0, ex:'40 (النطاق) + 0 (FALSE المباشرة) = 40.'},
+{t:'mcq', q:'ما نتيجة <span class="mono">=COUNT(A1:A8)</span> ؟', o:['3','7','8','5'], a:0, ex:'COUNT تحسب الخلايا الرقمية فقط: A2, A3, A4 → 3 خلايا.'},
+{t:'mcq', q:'ما نتيجة <span class="mono">=COUNTA(A1:A8)</span> ؟', o:['3','7','8','6'], a:1, ex:'COUNTA تحسب كل الخلايا غير الفارغة (نص+أرقام+منطقية): 7 خلايا (باستثناء A6 الفارغة).'},
+{t:'mcq', q:'ما نتيجة <span class="mono">=MIN(A1:A8)</span> ؟', o:['-5','0','20','TRUE'], a:0, ex:'MIN تتجاهل النص والمنطقية وتأخذ أصغر رقم: -5.'},
+{t:'mcq', q:'ما نتيجة <span class="mono">=MIN(A3:A8)</span> ؟', o:['20','0','-5','25'], a:0, ex:'ضمن A3:A8 الأرقام الفعلية هي 20 و25 فقط (تتجاهل المنطقية)، فالأصغر 20.'},
+{t:'mcq', q:'ما نتيجة <span class="mono">=MINA(A1:A8)</span> ؟', o:['-5','0','1','20'], a:0, ex:'MINA تُدخل النص كـ0 والمنطقية كـ1/0، فتبقى -5 الأصغر على أي حال.'},
+{t:'mcq', q:'ما نتيجة <span class="mono">=MINA(A3:A8)</span> ؟', o:['20','1','0','25'], a:2, ex:'ضمن A3:A8: 20, 25, TRUE(1), FALSE(0) → الأصغر هو 0 (من FALSE).'},
+{t:'mcq', q:'ما نتيجة <span class="mono">=MINA(A3:A7)</span> ؟', o:['20','1','0','25'], a:1, ex:'ضمن A3:A7: 20, 25, TRUE(1), TRUE(1) → الأصغر بينها هو 1.'},
+{t:'mcq', q:'ما نتيجة <span class="mono">=AVERAGE(A1:A8)</span> ؟', o:['13.33','6','8.5','40'], a:0, ex:'المتوسط للأرقام فقط: (-5+20+25)/3 = 13.33.'},
+{t:'mcq', q:'ما نتيجة <span class="mono">=AVERAGEA(A1:A8)</span> ؟', o:['13.33','6','7','0'], a:1, ex:'AVERAGEA تحسب كل الخلايا غير الفارغة (نص=0, منطقية=1/0): (0-5+20+25+1+1+0)/7 = 42/7 = 6.'},
+{t:'mcq', q:'دالة SUBTOTAL برقم دالة من 1 إلى 11 (مثل 9):', o:['تتجاهل الصفوف المخفية دائماً','تُدرج قيم الصفوف المخفية ضمن الحساب','تعمل فقط على الأعمدة النصية','لا تدعم دالة SUM'], a:1, ex:'رقم الدالة 1-11 (كـ9=SUM) يشمل الصفوف المخفية بالحساب.'},
+{t:'mcq', q:'دالة SUBTOTAL برقم دالة من 101 إلى 111 (مثل 109):', o:['تُدرج الصفوف المخفية بالحساب','تتجاهل الصفوف المخفية وتحسب المرئية فقط','تحسب النص فقط','غير موجودة أصلاً'], a:1, ex:'إضافة 100 لرقم الدالة (101-111) يجعلها تتجاهل الصفوف المخفية وتحسب الظاهرة فقط.'},
+{t:'mcq', q:'تُستخدم دالة INT لـ:', o:['تقريب الرقم لأقرب عشرة','إعطاء القيمة الصحيحة للناتج دون الفواصل (كسور)','حساب الجذر التربيعي','عكس ترتيب الأرقام'], a:1, ex:'INT تُرجع الجزء الصحيح من الرقم وتحذف الكسور العشرية (بالتقريب للأسفل).'},
+{t:'mcq', q:'كل خلية في Excel تُسمّى باسم:', o:['رقم تسلسلي فقط','السطر والعمود التابعَين لها معاً','اسم الورقة فقط','لا تسمية محددة'], a:1, ex:'اسم الخلية = دمج حرف العمود ورقم السطر (مثل B7).'},
+{t:'mcq', q:'يمكن لكل خلية في Excel أن تحتوي على بيانات من نوع:', o:['نص فقط','أرقام فقط','نصية، رقمية، تاريخ...إلخ','لا يمكن تخزين أي بيانات'], a:2, ex:'الخلية تقبل أنواعاً متعددة من البيانات: نص، رقم، تاريخ، منطقية، وغيرها.'},
+{t:'mcq', q:'كلما اقترب معامل التحديد (R²) لخط الاتجاه من الواحد (1)، فإن الاعتماد عليه في التنبؤ يكون:', o:['أضعف','أفضل','بلا تأثير','مستحيلاً'], a:1, ex:'كلما اقترب R² من 1 كان تطابق خط الاتجاه مع البيانات الفعلية أعلى، وكان الاعتماد عليه أفضل.'},
+{t:'mcq', q:'تهدف برمجيات "الحل الأمثل" (Optimization) في الإدارة أساساً إلى:', o:['مراقبة جدولة المشاريع الضخمة فقط (كأداة إدارة مشاريع)','التوصل إلى حل يحقق أكبر ربح أو أقل تكلفة ضمن قيود محددة','تصميم واجهات المستخدم','إدارة قواعد البيانات فقط'], a:1, ex:'برمجيات الحل الأمثل (كـ Solver) هدفها تعظيم/تصغير دالة هدف ضمن قيود — وهي غير مخصصة لجدولة ومراقبة المشاريع (تلك وظيفة أدوات إدارة مشاريع مثل MS Project).'},
+];
+
+BANK.ch3 = [
+{t:'mcq', q:'مجموعة من البرامج التي يمكن استخدامها في إنشاء ومعالجة قاعدة البيانات وصياغتها وإجراء التعديلات عليها هي:', o:['قاعدة البيانات','نظم قواعد البيانات','نظم إدارة قواعد البيانات (DBMS)','نظم ملفات البيانات'], a:2, ex:'هذا هو التعريف المباشر لنظام إدارة قواعد البيانات DBMS.'},
+{t:'mcq', q:'تتضمّن قاعدة البيانات (Database) مجموعة من:', o:['التقارير','النماذج','الجداول','كل ما سبق'], a:3, ex:'قاعدة البيانات الحديثة (كملف Access) تشمل جداول ونماذج واستعلامات وتقارير معاً.'},
+{t:'mcq', q:'يعني توزيع بيانات النظام على عدة ملفات مع المحافظة على الترابط بينها بأقل تكرار وحشو:', o:['التكامل (Integrated)','التشارك (Shared)','الاستعلام','النماذج'], a:0, ex:'هذا هو تعريف "التكامل" تحديداً كما ورد في الملخص.'},
+{t:'mcq', q:'عنصر البيانات الواحد يمكن أن يُستخدم من قِبل عدة مستخدمين في الوقت نفسه — هذا يُسمّى:', o:['التكامل','التشارك (Shared)','الفعالية','غير ذلك'], a:1, ex:'هذا هو تعريف "التشارك" في قواعد البيانات.'},
+{t:'mcq', q:'مجموعة من البرامج تُمكّن المستخدم من تعريف الروابط الخاصة بقاعدة البيانات وتحديد السجلات والحقول المكوّنة للملفات:', o:['لغة معالجة البيانات (DML)','لغة تعريف البيانات (DDL)','قاموس البيانات','لغة SQL فقط للاستعلام'], a:1, ex:'DDL هي اللغة المخصصة لتعريف وتوصيف الملفات والسجلات والحقول والعلاقات.'},
+{t:'mcq', q:'تحديد البيانات التي يجب أن تُخزَّن في قاعدة البيانات من أجل الوصول إلى المعلومات المطلوبة لإشباع حاجة الإدارة إلى المعلومات — يتم في:', o:['المستوى الفيزيائي','المستوى التجريدي','المستوى المنطقي','المستوى الداخلي'], a:2, ex:'هذه الفعالية (تحديد البيانات المطلوب تخزينها) تندرج ضمن مرحلة التصميم المنطقي لقاعدة البيانات.'},
+{t:'mcq', q:'المستوى الذي يتطلب لغة تمكّن من إجراء العمليات على ملفات قاعدة البيانات (كلغة DML) لتحقيق المعطيات الضرورية للوصول إلى النتائج المرغوبة:', o:['المستوى المنطقي','المستوى الفيزيائي','المستوى الداخلي','المستوى الخارجي (مستوى المستخدم)'], a:3, ex:'مستوى المستخدم المفرد (نهائي أو مبرمج) هو من يحتاج لغة معالجة بيانات DML/SQL لتنفيذ عملياته.'},
+{t:'mcq', q:'المستوى الأقل تجريداً في تصميم قاعدة البيانات، وهو ورقة تخزين البيانات فعلياً (أماكن التخزين والفهارس):', o:['المستوى الفيزيائي (Physical)','المستوى المنطقي (Logical)','المستوى التجريدي','المستوى المفاهيمي'], a:0, ex:'المستوى الفيزيائي هو الأقرب لآلية التخزين الفعلية على الوسائط، وهو الأقل تجريداً.'},
+{t:'mcq', q:'يُعتبر توصيفاً لمحتوى قاعدة البيانات بلغة قياسية (Data Description Language):', o:['المستوى الفيزيائي','المستوى المنطقي','المستوى التجريدي البحت دون لغة','المستوى المفاهيمي فقط'], a:1, ex:'المستوى المنطقي يستخدم لغة توصيف البيانات القياسية (DDL) لبناء تراكيب الجداول.'},
+{t:'mcq', q:'من مزايا استخدام قواعد البيانات (DBMS) مقارنة بنظم الملفات التقليدية:', o:['استقلالية البرامج عن البيانات','ضمان سلامة البيانات','إنشاء نسخ احتياطية واستعادة البيانات','كل ما سبق'], a:3, ex:'كل هذه المزايا الثلاث من فوائد استخدام نظم إدارة قواعد البيانات.'},
+{t:'mcq', q:'المعلومة ذاتها تكون مخزّنة في أكثر من ملف، وعند تعديلها في ملف قد لا نُعدّلها في الملفات الأخرى — هذه مشكلة:', o:['تكرار البيانات (Redundancy)','عدم التجانس','عدم المرونة','الافتقار للمواصفات القياسية'], a:0, ex:'هذه هي مشكلة تكرار البيانات الكلاسيكية في نظم الملفات التقليدية قبل استخدام DBMS.'},
+{t:'mcq', q:'من برامج (نظم) إدارة قواعد البيانات DBMS المستخدمة في إنتاج ومعالجة البيانات:', o:['Excel فقط','Word','SQL Server','PowerPoint'], a:2, ex:'SQL Server هو نظام إدارة قواعد بيانات حقيقي (DBMS)، بخلاف باقي البرامج المذكورة.'},
+{t:'mcq', q:'من مهام "محلل النظم" (Systems Analyst):', o:['تحديد متطلبات المستخدم وتطوير المواصفات المطلوبة لتحديد المطلوب من قاعدة البيانات','كتابة الكود البرمجي فقط','تصميم واجهات الطباعة فقط','صيانة الأجهزة'], a:0, ex:'محلل النظم هو من يجمع المتطلبات ويحوّلها إلى مواصفات لتصميم قاعدة البيانات.'},
+{t:'mcq', q:'تُستخدم نظم إدارة قواعد البيانات DBMS في:', o:['معالجة المعطيات','إدخال المعطيات','توصيف وإنشاء قواعد البيانات','كل ما سبق'], a:3, ex:'DBMS أداة شاملة تغطي الإنشاء والتوصيف والإدخال والمعالجة معاً.'},
+{t:'mcq', q:'حماية البيانات من الوصول غير المشروع إليها يُقصد بها:', o:['أمن البيانات (Data Security)','سلامة البيانات (Data Integrity)','مرونة البيانات','تكامل البيانات'], a:0, ex:'أمن البيانات = الحماية من الوصول غير المصرّح به، وتحديد صلاحيات المستخدمين.'},
+{t:'mcq', q:'الوظيفة التي تُخزّن مواصفات كل حقل من حقول قاعدة البيانات الأساسية (اسمها، نوعها، حجمها...):', o:['تعريف الروابط','ضمان حماية البيانات','معالجة البيانات','قاموس البيانات (Data Dictionary)'], a:3, ex:'قاموس البيانات هو "قاعدة بيانات عن قاعدة البيانات" يحفظ مواصفات كل الحقول.'},
+{t:'mcq', q:'تتميّز أنظمة إدارة قواعد البيانات "الترابطية" بأنها تسمح للمستخدم والمصمم بالعمل على بيئة منظمة وطبيعية، وتتولّى هي التعامل مع كل التفاصيل الفيزيائية المعقدة:', o:['الترابطية (Relational)','الشبكية','الهيكلية','لا علاقة بأي نوع'], a:0, ex:'هذا وصف مباشر لنظم قواعد البيانات الترابطية وهي الأكثر شيوعاً واعتماداً.'},
+{t:'mcq', q:'الحالة التي لا نستخدم فيها قاعدة بيانات لمشروع ما:', o:['حين تكون تكلفة الإعداد عالية جداً نسبة لحجم المشروع، والبيانات بسيطة، ولا حاجة لبيئة متعددة المستخدمين','حين تكون البيانات كبيرة ومعقّدة','حين نحتاج تشاركاً متعدد المستخدمين','حين نحتاج تكاملاً عالياً بين الملفات'], a:0, ex:'لا حاجة لقاعدة بيانات كاملة إن كان المشروع بسيطاً وبتكلفة إعداد غير مبرَّرة وبدون حاجة لتعدد المستخدمين.'},
+{t:'mcq', q:'من أنواع نظم قواعد البيانات المعتمدة بشكل شائع لبساطتها ومرونتها وسهولة عرضها:', o:['الهرمية','الشبكية','الترابطية (Relational)','لا وجود لتصنيف'], a:2, ex:'النظم الترابطية هي الأكثر انتشاراً بسبب البساطة والمرونة وسهولة العرض على شكل جداول.'},
+{t:'mcq', q:'تطبيق قاعدة البيانات هو مجموعة مترابطة من البرامج التطبيقية تُستخدم لتنفيذ سلسلة من أنشطة قاعدة البيانات — هذه العبارة:', o:['صحيحة','خاطئة'], a:0, ex:'العبارة صحيحة وتُعبّر عن تعريف تطبيق قاعدة البيانات.'},
+{t:'mcq', q:'"الاستقلالية" تعني عدم وجود تأثير للنظم الفرعية والبرامج على تراكيب البيانات — أي أن التعديلات في الاستخدامات والبرامج يجب أن تؤدي إلى تغيير في تراكيب البيانات. هذه العبارة:', o:['صحيحة','خاطئة'], a:1, ex:'العبارة خاطئة: الاستقلالية الصحيحة تعني أن تعديلات البرامج **لا** يجب أن تؤثر على تراكيب البيانات، أي عكس ما ورد في نص العبارة.'},
+];
+
+BANK.ch4 = [
+{t:'mcq', q:'المفتاح الرئيسي (Primary Key) هو:', o:['حقل فقط دون غيره','جدول كامل','حقل أو مجموعة حقول تُميّز السجل','سجل واحد فقط'], a:2, ex:'المفتاح الرئيسي قد يكون حقلاً واحداً أو مجموعة حقول، طالما يُميّز كل سجل عن غيره بلا تكرار.'},
+{t:'mcq', q:'يقوم المفتاح الرئيسي بتمييز:', o:['جدول','حقل','سجل (Record)','كل ما سبق'], a:2, ex:'وظيفة المفتاح الرئيسي هي تمييز كل سجل (سطر) عن غيره ضمن الجدول.'},
+{t:'mcq', q:'أي نوع من العلاقات يحتاج إلى جدول وسيط (Junction Table)؟', o:['One to One (1:1)','One to Many (1:N)','Many to Many (M:N)','لا يحتاج أي نوع لجدول وسيط'], a:2, ex:'علاقة متعدد لمتعدد (M:N) هي الوحيدة التي تحتاج جدولاً وسيطاً لتنفيذها فعلياً في قاعدة بيانات علائقية.'},
+{t:'mcq', q:'يعمل التكامل المرجعي (Referential Integrity) على ربط:', o:['السجلات بين الجداول المرتبطة','التقارير فقط','النماذج فقط','الاستعلامات فقط'], a:0, ex:'التكامل المرجعي يضبط العلاقة بين السجلات المرتبطة عبر المفتاح الرئيسي والأجنبي، ويمنع تكوّن سجلات معزولة.'},
+{t:'mcq', q:'يرتبط المفتاح الأجنبي (Foreign Key) بـ:', o:['المفتاح الرئيسي (في جدول آخر)','المفتاح المرشح فقط','مفتاح أجنبي آخر فقط','لا يرتبط بشيء'], a:0, ex:'المفتاح الأجنبي هو حقل يشير إلى المفتاح الرئيسي في جدول آخر لإقامة العلاقة بينهما.'},
+{t:'mcq', q:'يمكن للقيم داخل حقل المفتاح الأجنبي أن:', o:['تتكرر حسب الحاجة','لا تتكرر أبداً مثل المفتاح الرئيسي','تكون فارغة إلزامياً','تُحذف تلقائياً كل شهر'], a:0, ex:'على عكس المفتاح الرئيسي، يُسمح لقيم المفتاح الأجنبي بالتكرار (مثل قسم واحد يتكرر لديه عدة موظفين).'},
+{t:'mcq', q:'قاعدة "الكيان المتكامل" (Entity Integrity) تنص على أنه لا يجوز أن يُترك المفتاح الرئيسي فارغاً أو يحتوي قيمة غير معروفة — وهذا يميّز:', o:['المفتاح الرئيسي','المفتاح الأجنبي','المفتاح المرشح','لا شيء مما سبق'], a:0, ex:'قاعدة عدم ترك المفتاح فارغاً (Not Null) خاصة بالمفتاح الرئيسي تحديداً.'},
+{t:'mcq', q:'في عملية "الإسقاط" (Projection)، نختار القيم من:', o:['الجدول ككل','السطر','العمود (الصفة)','الحقل الأول فقط دوماً'], a:2, ex:'الإسقاط يختزل الرابطة لتحتفظ بأعمدة (صفات) معيّنة فقط من بين كل أعمدتها.'},
+{t:'mcq', q:'العلاقة بين جدولين تتم عبر:', o:['حقل المفتاح الرئيسي بالجدول الأول وحقل المفتاح المرشح بالجدول الثاني','حقل المفتاح الرئيسي بالجدول الأول وحقل المفتاح الأجنبي بالجدول الثاني','حقل المفتاح الأجنبي بالجدول الأول وحقل المفتاح المرشح بالجدول الثاني','بشكل عشوائي دون قاعدة'], a:1, ex:'الربط الصحيح: المفتاح الرئيسي في الجدول "الأب" ↔ المفتاح الأجنبي المقابل له في الجدول "الابن".'},
+{t:'mcq', q:'يعتمد النموذج العلائقي (الترابطي) على مفهوم:', o:['الجداول فقط','العلاقات فقط','الجداول والعلاقات معاً','الاستعلامات فقط'], a:2, ex:'النموذج الترابطي يقوم أساساً على الجداول (لتخزين البيانات) والعلاقات بينها (لربطها منطقياً).'},
+{t:'mcq', q:'ترمز ERM إلى:', o:['Entity Relationship Model','Excel Report Manager','Enterprise Resource Model','External Relation Method'], a:0, ex:'ERM = Entity-Relationship Model، أحد أهم تقنيات تصميم وتوثيق قواعد البيانات.'},
+{t:'mcq', q:'في مرحلة "التصميم المنطقي" لقاعدة البيانات، يتم تحويل تراكيب البيانات (جداول) إلى ملفات باستخدام لغة توصيف البيانات — هذه العبارة:', o:['صحيحة','خاطئة'], a:1, ex:'العبارة خاطئة: تحويل التراكيب إلى ملفات فعلية باستخدام DDL يتم في مرحلة **التصميم المادي (الفيزيائي)** وليس المنطقي.'},
+{t:'mcq', q:'يتم تصنيف الكيانات في نموذج REA إلى:', o:['الموارد والأحداث والوكلاء','الجداول والعلاقات فقط','المفاتيح الرئيسية والأجنبية فقط','البرامج والمستخدمين'], a:0, ex:'REA = Resources, Events, Agents — الموارد والأحداث والوكلاء.'},
+{t:'mcq', q:'على ماذا يدل الرمز <span class="mono">؟؟</span> (علامتا استفهام متتاليتان) في معايير البحث؟', o:['كلمة من حرفين مجهولين بالضبط','كلمة من 3 أحرف على الأقل','نهاية النص','كلمة تبدأ وتنتهي بنفس الحرف'], a:0, ex:'كل ? يمثل حرفاً مجهولاً واحداً، فوجود علامتين يعني حرفين مجهولين بالضبط.'},
+{t:'mcq', q:'على ماذا يدل النمط <span class="mono">؟*؟</span> في معايير البحث؟', o:['كلمة مؤلفة من حرفين على الأقل (حرف مجهول + أي عدد من المحارف + حرف مجهول)','كلمة من 3 أحرف فقط بالضبط','كلمة تبدأ وتنتهي بنفس الحرف','لا معنى له'], a:0, ex:'؟ في البداية والنهاية = حرف مجهول واحد بكل طرف، و* بينهما تعني أي عدد من المحارف (قد يكون صفراً) — فالحد الأدنى للطول هو حرفان.'},
+];
+
+BANK.ch5 = [
+{t:'mcq', q:'امتداد ملفات Access الحديثة هو:', o:['.mdb','.accdb','.accbd','.xlsx'], a:1, ex:'الامتداد الحديث لملفات Access هو .accdb (بدلاً من .mdb القديم).'},
+{t:'mcq', q:'الحد الأقصى لعدد أحرف حقل "نص مختصر" (Short Text) في Access:', o:['40 حرفاً','102 حرفاً','255 حرفاً','5 أحرف'], a:2, ex:'يبلغ الحد الأقصى لحقل النص المختصر 255 حرفاً في Access.'},
+{t:'mcq', q:'عند تفعيل خيار "تتالي تحديث الحقول المرتبطة" مع فرض التكامل المرجعي:', o:['يتم حذف البيانات في الجداول المرتبطة دون تعديل الحقل الرئيسي','يتم تحديث البيانات في الحقل الرئيسي وتحديث كل البيانات المرتبطة في الجداول الأخرى تلقائياً','لا يحدث أي تأثير على الجداول الأخرى','يرفض Access أي تحديث'], a:1, ex:'تفعيل هذا الخيار يجعل Access يُحدّث تلقائياً كل الحقول المرتبطة عند تغيير قيمة المفتاح الرئيسي.'},
+{t:'mcq', q:'إذا لم نُفعّل خيار "تتالي حذف السجلات المرتبطة" وحاولنا حذف سجل رئيسي مرتبط بسجلات في جدول آخر (مع وجود تكامل مرجعي):', o:['يرفض Access عملية الحذف','يحذف Access السجل من الجدولين دون تحذير','يحذف Access السجل الرئيسي فقط ويترك الفرعي معزولاً','لا علاقة للتكامل المرجعي بهذا'], a:0, ex:'التكامل المرجعي يمنع نشوء سجلات معزولة، فيرفض Access أي عملية حذف تنتهك هذه العلاقة دون تفعيل التتالي.'},
+{t:'mcq', q:'من برامج (أنظمة) لغة الاستعلام SQL المعروفة:', o:['Excel','Word','SQL Server','PowerPoint'], a:2, ex:'SQL Server هو نظام قواعد بيانات فعلي يعتمد لغة SQL، بخلاف باقي البرامج المكتبية.'},
+{t:'mcq', q:'دالة (أمر) الحذف من الاستعلام في SQL هي:', o:['DELETE','DISTINCT','ORDER BY','CREATE'], a:0, ex:'DELETE هي الأمر المخصص لحذف السجلات في استعلامات SQL.'},
+{t:'mcq', q:'أمر حذف النتائج المكررة في الاستعلام:', o:['DELETE','DISTINCT','ORDER BY','CREATE'], a:1, ex:'DISTINCT يُستخدم بعد SELECT لحذف النتائج المكررة من نتيجة الاستعلام.'},
+{t:'mcq', q:'لإنشاء جدول جديد في SQL نستخدم:', o:['ADD TABLE','CREATE TABLE','INPUT TABLE','INNER FIELD'], a:1, ex:'CREATE TABLE هي الصيغة القياسية لإنشاء جدول جديد.'},
+{t:'mcq', q:'تُستخدم لوضع شرط على البيانات المسموح إدخالها في حقل معيّن ضمن Access:', o:['Validation Text','Validation Rule','Create Table','Drop Table'], a:1, ex:'Validation Rule هي الخاصية التي تحدد الشرط الذي يجب أن تحققه البيانات المُدخلة.'},
+{t:'mcq', q:'الخاصية التي تُظهر رسالة تنبيه عند تعارض البيانات المُدخلة مع الشرط المحدد:', o:['Validation Text','Validation Rule','Default Value','Input Mask'], a:0, ex:'Validation Text هي النص الذي يظهر كرسالة خطأ عند مخالفة شرط Validation Rule.'},
+{t:'mcq', q:'استعلام يعرض عند تشغيله مربع حوار خاص به يطلب من المستخدم معلومات تُعامل كمعايير بحث:', o:['استعلام التحديث','استعلام التحديد العادي','استعلام المعلمات (Parameter Query)','لا يوجد استعلام كهذا'], a:2, ex:'استعلام المعلمات يطلب من المستخدم قيمة عند التشغيل، بدلاً من تحديدها ثابتة داخل نص الاستعلام.'},
+{t:'mcq', q:'تُستخدم دالة Max في الاستعلامات على:', o:['الأرقام فقط','النصوص فقط','التاريخ فقط','الأرقام والتواريخ (كل ما سبق باستثناء النصوص المحضة)'], a:3, ex:'دالتا MAX وMIN تصلحان لحقول رقمية وحقول تاريخ على حد سواء، لا للنصوص المحضة.'},
+{t:'mcq', q:'ترمز SQL إلى:', o:['Structured Query Language','Standard Quality Level','System Question Log','Simple Query List'], a:0, ex:'SQL = Structured Query Language، لغة الاستعلام البنيوية.'},
+{t:'mcq', q:'يُستخدم التنسيق (Format) في Access لـ:', o:['حذف السجلات','حذف الجداول','تحديد شكل ظهور البيانات في الحقل','إنشاء علاقات جديدة'], a:2, ex:'خاصية Format تتحكم بشكل عرض البيانات (كعدد الفواصل العشرية أو صيغة التاريخ) دون تغيير القيمة الفعلية.'},
+{t:'mcq', q:'استعلام SQL لتخفيض السعر إلى 50% من قيمته الحالية يُكتب:', o:['Set price = price − 50%','Set price = price + 50%','Set price = price * 50%','Set price = price ÷ 50%'], a:2, ex:'لتخفيض السعر إلى (وليس بمقدار) 50% من قيمته، نضربه في 50%: price = price * 50%.'},
+{t:'mcq', q:'ملف Microsoft Access يمكن أن يحتوي على:', o:['جدول واحد فقط','جدولين على الأقل إلزامياً','أكثر من جدول','خمسة جداول على الأقل إلزامياً'], a:2, ex:'ملف Access الواحد (.accdb) يمكن أن يحوي أي عدد من الجداول والاستعلامات والنماذج والتقارير.'},
+{t:'mcq', q:'لحذف جدول كامل باستخدام SQL نستخدم:', o:['CREATE TABLE','DROP TABLE','DISTINCT','SELECT'], a:1, ex:'DROP TABLE هي الصيغة القياسية لحذف جدول كامل من قاعدة البيانات.'},
+{t:'mcq', q:'لا يُفرض التكامل المرجعي مباشرة مع:', o:['الجداول','الاستعلامات','العلاقات بين الجداول','المفاتيح الأجنبية'], a:1, ex:'التكامل المرجعي يُفرض على علاقات الجداول (الحقول المرتبطة)، لا على الاستعلامات كعنصر مستقل.'},
+{t:'mcq', q:'تُستخدم الاستعلامات في:', o:['معالجة الملفات','تجميع الملفات','طلب معلومات عن المعطيات','كل ما سبق'], a:3, ex:'الاستعلامات أداة شاملة لمعالجة وتجميع البيانات والحصول على معلومات محددة منها.'},
+{t:'mcq', q:'عندما نريد توحيد سجلات جدولين توجد بينهما قيم متطابقة في حقل مشترك، نستخدم:', o:['INNER JOIN','LEFT JOIN','RIGHT JOIN','UNION فقط'], a:0, ex:'INNER JOIN يُظهر فقط السجلات التي لها تطابق في الحقل المشترك بين الجدولين.'},
+{t:'mcq', q:'عند الرغبة بالحصول على كل سجلات الجدول الأول والسجلات المطابقة فقط من الجدول الثاني، نستخدم:', o:['INNER JOIN','LEFT JOIN','RIGHT JOIN','لا حل'], a:1, ex:'LEFT JOIN يُبقي كل سجلات الجدول الأول (الأيسر) ويُضيف المطابق فقط من الثاني.'},
+{t:'mcq', q:'عند الرغبة بالحصول على كل سجلات الجدول الثاني والسجلات المطابقة فقط من الجدول الأول، نستخدم:', o:['INNER JOIN','LEFT JOIN','RIGHT JOIN','لا حل'], a:2, ex:'RIGHT JOIN يُبقي كل سجلات الجدول الثاني (الأيمن) ويُضيف المطابق فقط من الأول.'},
+{t:'mcq', q:'من الاستعلامات الإجرائية (Action Queries) في Access:', o:['الحذف (Delete)','الإضافة (Append)','التحديث (Update)','كل ما سبق'], a:3, ex:'الاستعلامات الإجرائية الثلاثة الأساسية: حذف، إضافة، تحديث — وتُجري تغييراً فعلياً على البيانات.'},
+{t:'mcq', q:'الاستعلامات التي تبدأ بكلمة SELECT تُصنَّف على أنها:', o:['استعلامات التحديث','استعلامات التحديد (Select Queries)','استعلامات المعلمات دوماً','استعلامات الحذف'], a:1, ex:'كل استعلام يبدأ بـ SELECT هو استعلام تحديد، يهدف لاستعادة/عرض بيانات دون تعديلها.'},
+{t:'mcq', q:'استعلام SQL لإظهار الزبائن الموجودين في مدينتَي دمشق وعمّان يُكتب باستخدام:', o:['SELECT * FROM Customer WHERE City IN ("Damascus","Amman")','SELECT * FROM Customer WHERE City = "Damascus" AND "Amman"','SELECT * FROM Customer ORDER BY City','SELECT * FROM Customer GROUP BY City'], a:0, ex:'عامل IN يسمح بمطابقة القيمة مع أي قيمة ضمن قائمة محددة، وهو الأنسب هنا بدلاً من تكرار شرط OR.'},
+{t:'mcq', q:'الخاصية التي تسمح بتعريف اسم بديل يظهر لحقل معيّن في جدول البيانات دون تغيير اسمه الحقيقي:', o:['Caption','Default Value','Indexed','Format'], a:0, ex:'خاصية Caption تُظهر تسمية بديلة للحقل في واجهة عرض البيانات دون تعديل اسم الحقل الفعلي في التصميم.'},
+{t:'mcq', q:'تُستخدم دالة/استعلام Update في Access لـ:', o:['تحديث بنية الجداول','تحديث بيانات الجداول (قيم السجلات)','تحديث بنية الاستعلام نفسه','حذف الجداول'], a:1, ex:'استعلام التحديث (Update Query) يُغيّر قيم البيانات ضمن السجلات، لا بنية الجدول نفسها.'},
+{t:'mcq', q:'في عرض التخطيط (Layout View) لتصميم نموذج في Access:', o:['النموذج لا يعمل فعلياً ولا تظهر البيانات الحقيقية','النموذج يعمل فعلياً وتظهر البيانات الحقيقية أثناء التعديل','لا يمكن تغيير حجم عناصر التحكم فيه','يظهر فقط مقطع التذييل'], a:1, ex:'ميزة عرض التخطيط أن النموذج يعمل فعلياً فتظهر البيانات الحقيقية بينما نُعدّل التصميم.'},
+{t:'mcq', q:'أي طرق العرض التالية تسمح برؤية مقاطع الرأس والتفصيل والتذييل بتفصيل أكبر، رغم أن النموذج لا يعمل فعلياً أثناء التعديل؟', o:['عرض التخطيط','عرض التصميم','عرض ورقة البيانات','عرض النموذج المنقسم'], a:1, ex:'عرض التصميم (Design View) يوفر تحكماً تفصيلياً ببنية النموذج، لكنه لا يُشغّل النموذج فعلياً أثناء التحرير.'},
+{t:'mcq', q:'عنصر التحكم الذي يكون مصدر بياناته حقلاً في جدول أو استعلام يُسمّى:', o:['عنصر تحكم منضم (Bound)','عنصر تحكم غير منضم (Unbound)','عنصر تحكم محسوب فقط','لا تسمية له'], a:0, ex:'عنصر التحكم "المنضم" مرتبط مباشرة بحقل حقيقي من مصدر بيانات.'},
+{t:'mcq', q:'عنصر تحكم يكون مصدر بياناته "تعبيراً" (Expression) بدلاً من حقل مباشر يُسمّى:', o:['عنصر تحكم منضم','عنصر تحكم غير منضم','عنصر تحكم محسوب (Calculated)','عنصر تحكم مخفي'], a:2, ex:'عنصر التحكم "المحسوب" يعرض نتيجة معادلة/تعبير، وقد يستخدم بيانات من حقول أخرى.'},
+{t:'mcq', q:'مقطع التقرير الذي يظهر مرة واحدة في بداية التقرير فقط (عنوان، شعار، تاريخ):', o:['رأس التقرير','رأس الصفحة','رأس المجموعة','التفصيل'], a:0, ex:'رأس التقرير يظهر مرة واحدة فقط في أول صفحة من التقرير.'},
+{t:'mcq', q:'مقطع التقرير الذي يظهر في بداية كل مجموعة سجلات جديدة (مثل اسم المنتج قبل تفاصيله):', o:['رأس التقرير','رأس الصفحة','رأس المجموعة','تذييل الصفحة'], a:2, ex:'رأس المجموعة يظهر عند بداية كل تجميع جديد للسجلات (Group).'},
+];
+
+// ============ EXTRA CHALLENGE QUESTIONS (created beyond the source bank, for additional practice) ============
+const EXTRA = {};
+
+EXTRA.ch1 = [
+{t:'mcq', q:'الحاسوب الذي يقيس تغيّرات درجة الحرارة بشكل مستمر ويحوّلها لقيم متناظرة هو حاسوب:', o:['رقمي','تناظري (Analog)','مختلط','عملاق'], a:1, ex:'الحاسوب التناظري يقيس ظواهر طبيعية مستمرة (كالحرارة ودقات القلب) ويحوّلها لقيم متناظرة.'},
+{t:'mcq', q:'وحدات نظام الحاسوب الثلاث الأساسية هي:', o:['الشاشة، لوحة المفاتيح، الطابعة','وحدة الإدخال/الإخراج، وحدة المعالجة المركزية، وحدة الذاكرة','الإنترنت، البرامج، المستخدم','نظام التشغيل، المتصفح، قاعدة البيانات'], a:1, ex:'هذه الثلاثة تشكّل البنية الأساسية لأي نظام حاسوب.'},
+{t:'mcq', q:'مترجمات اللغات (Language Translators) تضم ثلاثة أنواع رئيسية هي:', o:['المفسّر، المترجم، المجمّع','نظام التشغيل، الأدوات المساعدة، المحمّل','الإدخال، المعالجة، الإخراج','DDL، DML، SQL'], a:0, ex:'الثلاثة أنواع الأساسية لمترجمات اللغات: Interpreter, Compiler, Assembler.'},
+{t:'mcq', q:'أنظمة أتمتة المكاتب الأربعة هي:', o:['أنظمة إدارة المستندات، الاتصالات، المؤتمرات عن بعد، الدعم','الجداول، النماذج، التقارير، الاستعلامات','الإدخال، المعالجة، التخزين، الإخراج','Excel، Word، Access، PowerPoint'], a:0, ex:'الأربعة أنظمة المذكورة في الملخص لتصنيف أنظمة أتمتة المكاتب.'},
+];
+
+EXTRA.ch2 = [
+{t:'mcq', q:'ما نتيجة العملية: <span class="mono">=(2+3)*2^2</span> ؟', o:['20','14','13','25'], a:0, ex:'الأقواس أولاً: 2+3=5، ثم القوة: 2^2=4، ثم الضرب: 5*4=20.'},
+{t:'mcq', q:'إذا كانت الخلية A1 تحتوي 12 وB1 تحتوي 3، فما نتيجة <span class="mono">=A1/B1&"وحدة"</span> ؟', o:['4وحدة','"4"&"وحدة"=4 نصاً متصلاً بكلمة وحدة','خطأ في الصيغة','15وحدة'], a:1, ex:'12/3=4 (رقم)، ثم يُضمّ بعملية & مع النص "وحدة" لتصبح النتيجة نصاً: "4وحدة".'},
+{t:'mcq', q:'أي من الصيغ التالية تحتوي مرجعاً نسبياً بالكامل؟', o:['$A$1','A1','$A1','A$1'], a:1, ex:'A1 بلا أي علامة $ هو مرجع نسبي بالكامل، يتغيّر العمود والسطر معاً عند النقل.'},
+{t:'mcq', q:'عند استخدام دالة <span class="mono">=SUBTOTAL(109,B2:B20)</span> ضمن نطاق يحتوي صفوفاً مخفية بالتصفية:', o:['يُحسب مجموع كل القيم بما فيها المخفية','يُحسب مجموع القيم الظاهرة فقط ويتجاهل المخفية','تُعيد الدالة خطأً دوماً','تعمل فقط مع النصوص'], a:1, ex:'رقم الدالة 109 (=100+9) يعني SUM لكن مع تجاهل الصفوف المخفية بالتصفية.'},
+{t:'mcq', q:'دالة PV تفترض أن قيم الدفعات (pmt) للمبالغ الصادرة (المدفوعة) تُكتب بعلامة:', o:['سالبة دوماً بينما الإيرادات موجبة','موجبة دوماً بلا استثناء','لا فرق بالعلامة أبداً','تُكتب كنص فقط'], a:0, ex:'في المنطق المالي لدوال Excel كـ PV/FV/NPV، الدفعات الصادرة (تدفقات خارجة) تُكتب بقيمة سالبة، والإيرادات (تدفقات داخلة) بقيمة موجبة.'},
+];
+
+EXTRA.ch3 = [
+{t:'mcq', q:'الفرق الجوهري بين "نظام الملفات التقليدي" و"نظام إدارة قواعد البيانات" هو أن الأخير:', o:['يفصل البرامج عن البيانات ويقلل التكرار','يزيد تكرار البيانات عمداً لتحسين الأداء','لا يحتاج مستخدمين لتشغيله','يعمل فقط بدون شبكة'], a:0, ex:'استقلالية البرامج عن البيانات وتقليل التكرار هما أهم مزايا DBMS مقارنة بنظم الملفات التقليدية.'},
+{t:'mcq', q:'مكونات نظام المعلومات المؤتمت باستخدام DBMS هي:', o:['قاعدة البيانات + البرمجيات + التجهيزات المادية + المستخدمون','الجداول فقط','الشبكة فقط','لغة SQL فقط'], a:0, ex:'أربعة مكونات أساسية يتكون منها نظام المعلومات المؤتمت.'},
+{t:'mcq', q:'من مهام مدير قاعدة البيانات (DBA):', o:['تحديد صلاحيات المستخدمين وتوفير الأمن والحماية للقاعدة','كتابة برامج التطبيقات النهائية فقط','تصميم الشعارات والواجهات الجمالية','بيع المنتجات للعملاء'], a:0, ex:'من أهم مهام DBA: الأمن، الصلاحيات، إعادة التنظيم، والتنسيق بين متطلبات المستخدمين.'},
+];
+
+EXTRA.ch4 = [
+{t:'mcq', q:'لو كان لدينا جدول "طالب" وجدول "مقرر"، والطالب يسجّل عدة مقررات والمقرر يسجّل فيه عدة طلاب، فنوع العلاقة بينهما:', o:['1:1','1:N','M:N','لا علاقة بينهما'], a:2, ex:'تسجيل متعدد من الجهتين (طالب↔مقرر) هو المثال الكلاسيكي لعلاقة M:N التي تحتاج جدولاً وسيطاً (كجدول "التسجيل").'},
+{t:'mcq', q:'عملية "الانتقاء" (Restriction) في الجبر العلائقي تقوم على:', o:['اختيار أعمدة معينة من رابطة','اختيار أسطر تحقق شرطاً معيناً من رابطة','دمج رابطتين لهما عمود مشترك','حذف رابطة كاملة'], a:1, ex:'الانتقاء يعمل على مستوى الأسطر (السجلات) وفق شرط، بعكس الإسقاط الذي يعمل على مستوى الأعمدة.'},
+{t:'mcq', q:'في نموذج REA، العلاقة بين "المخزون" (كمورد) و"طلب العميل" (كحدث) هي من نوع:', o:['1:1','1:N','M:N','0:N'], a:2, ex:'كما ورد في الملخص، علاقة كيان المخزون (مورد) مع كيان طلب العميل (حدث) هي من نوع M:N.'},
+];
+
+EXTRA.ch5 = [
+{t:'mcq', q:'أراد مستخدم إظهار أسماء الموظفين الذين رواتبهم بين 2000 و5000 باستخدام SQL، الصيغة الأصح هي:', o:['SELECT Name FROM Employee WHERE Salary BETWEEN 2000 AND 5000','SELECT Name FROM Employee WHERE Salary > 2000 OR Salary < 5000','SELECT Name FROM Employee WHERE Salary LIKE 2000-5000','SELECT Name FROM Employee GROUP BY Salary'], a:0, ex:'عامل BETWEEN...AND هو الأنسب لتحديد نطاق قيم بين حدّين، وليس OR الذي كان سيُظهر كل الرواتب تقريباً بالخطأ.'},
+{t:'mcq', q:'لو أردنا حساب عدد الموظفين في كل قسم مع عرض القسم فقط، نستخدم:', o:['SELECT Dept, COUNT(*) FROM Employee GROUP BY Dept','SELECT Dept, COUNT(*) FROM Employee ORDER BY Dept','SELECT Dept FROM Employee WHERE COUNT(*)','SELECT * FROM Employee DISTINCT Dept'], a:0, ex:'GROUP BY مع دالة تجميعية (COUNT) هو الأسلوب الصحيح لحساب عدد السجلات لكل فئة من فئات عمود معيّن.'},
+{t:'mcq', q:'لإظهار الأقسام التي يزيد عدد موظفيها عن 10 فقط (بعد التجميع)، نستخدم:', o:['WHERE COUNT(*) > 10','HAVING COUNT(*) > 10','ORDER BY COUNT(*) > 10','DISTINCT COUNT(*) > 10'], a:1, ex:'HAVING هي العبارة الصحيحة لوضع شرط على نتيجة التجميع (بعد GROUP BY)، بخلاف WHERE التي تُطبَّق قبل التجميع على السجلات الفردية.'},
+{t:'mcq', q:'عند استخدام Find & Replace في Access/Excel للبحث عن "محمد" واستبداله بـ"أحمد" ضمن حقل نصي يحوي أيضاً القيمة "محمد أمين"، فإن النتيجة تعتمد على تفعيل خيار:', o:['"مطابقة كل محتوى الحقل" (Match whole field) أو البحث الجزئي فقط','لا يوجد أي خيار يتحكم بذلك','التكامل المرجعي فقط','Validation Rule فقط'], a:0, ex:'إن كان البحث جزئياً (بدون مطابقة كامل الحقل) سيُستبدل "محمد" في "محمد أمين" لتصبح "أحمد أمين"، أما مع تفعيل مطابقة كامل الحقل فلن يتغيّر لأنه لا يطابق "محمد" فقط.'},
+];
+
+
+
+
+</script>
+<script>
+// ============ APP STATE ============
+const STORAGE_KEY = 'gbs504_progress_v1';
+function loadProgress(){
+  try{
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if(raw) return JSON.parse(raw);
+  }catch(e){}
+  return { chapters:{}, finalBest:0, finalAttempts:0 };
+}
+function saveProgress(){ try{ localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); }catch(e){} }
+let state = loadProgress();
+CHAPTERS.forEach(c=>{ if(!state.chapters[c.id]) state.chapters[c.id] = {read:false, bestPct:0, done:false}; });
+
+let currentSection = 'home';
+let quizState = null; // {chapterId, questions:[], idx, correctCount, answered:[]}
+
+const PASS_PCT = 80;
+const QUIZ_LEN = 12;
+
+const EXCEL_A_CONTEXT = `
+  <div class="question-data">
+    <div class="context-label">بيانات العمود A المستخدمة في هذا السؤال:</div>
+    <table aria-label="قيم العمود A"><tr><th>A1</th><th>A2</th><th>A3</th><th>A4</th><th>A5</th><th>A6</th><th>A7</th><th>A8</th></tr><tr><td>"أحمد"</td><td>-5</td><td>20</td><td>25</td><td>TRUE</td><td>فارغة</td><td>TRUE</td><td>FALSE</td></tr></table>
+  </div>`;
+
+// ============ UTIL ============
+function shuffle(arr){
+  const a = arr.slice();
+  for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; }
+  return a;
+}
+function pick(arr,n){ return shuffle(arr).slice(0, Math.min(n, arr.length)); }
+function el(html){ const d=document.createElement('div'); d.innerHTML=html.trim(); return d.firstElementChild; }
+function pct(n,d){ return d? Math.round((n/d)*100) : 0; }
+function formatQuestion(q){
+  const usesExcelAData = /A[1-8]:A[1-8]|SUM\(A1,A5\)/.test(q.q);
+  return q.q + (usesExcelAData ? EXCEL_A_CONTEXT : '');
+}
+function buildInlineQuestionCard(q, indexLabel){
+  const wrap = el(`<div class="qcard" style="margin-bottom:16px;">
+    <div class="qtag">${q.t==='text' ? 'أدخل الناتج' : 'اختر الإجابة الصحيحة'} · ${indexLabel}</div>
+    <div class="qtext">${formatQuestion(q)}</div>
+    <div class="ibody"></div>
+  </div>`);
+  const body = wrap.querySelector('.ibody');
+
+  if(q.t==='text'){
+    body.innerHTML = `<div class="numeric-row">
+      <input type="text" class="txtInp" placeholder="اكتب الناتج هنا...">
+      <button class="btn checkBtn">تحقق</button>
+    </div><div class="feedback"></div>`;
+    const input = body.querySelector('.txtInp');
+    const btn = body.querySelector('.checkBtn');
+    const fb = body.querySelector('.feedback');
+    const check = ()=>{
+      if(btn.disabled) return;
+      const val = input.value.trim().replace(/\s+/g,'');
+      const correct = val === String(q.a).trim();
+      btn.disabled = true; input.disabled = true;
+      fb.className = 'feedback show ' + (correct?'ok':'bad');
+      fb.innerHTML = (correct? '✔ إجابة صحيحة! ' : `✘ غير صحيح — الإجابة الصحيحة: <b class="mono">${q.a}</b>. `) + `<br><span class="explain-label">التوضيح:</span> ${q.ex||''}`;
+    };
+    btn.addEventListener('click', check);
+    input.addEventListener('keydown', e=>{ if(e.key==='Enter') check(); });
+  } else {
+    body.innerHTML = `<div class="options">` + q.o.map((opt,i)=>
+      `<div class="opt" data-i="${i}"><div class="bullet"></div><div>${opt}</div></div>`
+    ).join('') + `</div><div class="feedback"></div>`;
+    const fb = body.querySelector('.feedback');
+    let answered = false;
+    body.querySelectorAll('.opt').forEach(optEl=>{
+      optEl.addEventListener('click', ()=>{
+        if(answered) return;
+        answered = true;
+        const chosen = parseInt(optEl.dataset.i);
+        const correct = chosen === q.a;
+        body.querySelectorAll('.opt').forEach(o=>{
+          o.classList.add('disabled');
+          const i = parseInt(o.dataset.i);
+          if(i===q.a) o.classList.add('correct');
+          else if(i===chosen) o.classList.add('wrong');
+        });
+        fb.className = 'feedback show ' + (correct?'ok':'bad');
+        fb.innerHTML = (correct? '✔ إجابة صحيحة! ' : '✘ غير صحيح. ') + `<br><span class="explain-label">التوضيح:</span> ${q.ex||''}`;
+      });
+    });
+  }
+  return wrap;
+}
+function resetProgress(){
+  if(!window.confirm('هل تريد إعادة تعيين كل التقدم والنتائج المحفوظة؟')) return;
+  localStorage.removeItem(STORAGE_KEY);
+  state = { chapters:{}, finalBest:0, finalAttempts:0 };
+  CHAPTERS.forEach(c=>{ state.chapters[c.id] = {read:false, bestPct:0, done:false}; });
+  quizState = null;
+  currentSection = 'home';
+  renderNav();
+  renderHome();
+  window.scrollTo(0,0);
+}
+
+function allChaptersDone(){ return CHAPTERS.every(c=>state.chapters[c.id].done); }
+function overallProgress(){
+  const total = CHAPTERS.length;
+  let sum = 0;
+  CHAPTERS.forEach(c=>{ sum += (state.chapters[c.id].done? 1 : (state.chapters[c.id].bestPct/100)*0.6 ); });
+  return Math.round((sum/total)*100);
+}
+
+// ============ NAV RENDER ============
+function renderNav(){
+  const nav = document.getElementById('navlist');
+  nav.innerHTML = '<div class="nav-section-label">الفصول</div>' +
+    CHAPTERS.map(c=>{
+      const done = state.chapters[c.id].done;
+      return `<div class="navitem ${currentSection===c.id?'active':''} ${done?'done':''}" data-nav="${c.id}">
+        <div class="nav-num">${c.num}</div>
+        <div>${c.short}</div>
+        <div class="nav-seal">✓</div>
+      </div>`;
+    }).join('') +
+    `<div class="navitem ${currentSection==='home'?'active':''}" data-nav="home">
+      <div class="nav-num">⌂</div><div>الرئيسية</div>
+    </div>`;
+
+  const nav2 = document.getElementById('navlist2');
+  const finalUnlocked = allChaptersDone();
+  nav2.innerHTML = `
+    <div class="navitem ${currentSection==='final'?'active':''}" data-nav="final">
+      <div class="nav-num">${finalUnlocked?'★':'🔒'}</div><div>امتحان شامل نهائي</div>
+    </div>
+    <div class="navitem ${currentSection==='bank'?'active':''}" data-nav="bank">
+      <div class="nav-num">≡</div><div>بنك الأسئلة الكامل</div>
+    </div>
+    <div class="navitem ${currentSection==='extra'?'active':''}" data-nav="extra">
+      <div class="nav-num">+</div><div>تمارين إضافية</div>
+    </div>
+  `;
+
+  document.querySelectorAll('[data-nav]').forEach(n=>{
+    n.addEventListener('click', ()=> go(n.dataset.nav));
+  });
+
+  document.getElementById('overallPct').textContent = overallProgress()+'%';
+  document.getElementById('overallFill').style.width = overallProgress()+'%';
+}
+
+function go(section, opts){
+  currentSection = section;
+  quizState = null;
+  renderNav();
+  if(section==='home') renderHome();
+  else if(section==='final') renderFinal();
+  else if(section==='bank') renderBankBrowser();
+  else if(section==='extra') renderExtraHub();
+  else renderChapter(section, (opts&&opts.tab)||'read');
+  document.getElementById('content').scrollTop = 0;
+  window.scrollTo(0,0);
+}
+
+// ============ HOME ============
+function renderHome(){
+  document.getElementById('crumbTitle').textContent = 'الرئيسية';
+  const doneCount = CHAPTERS.filter(c=>state.chapters[c.id].done).length;
+  const content = document.getElementById('content');
+  content.innerHTML = `
+    <div class="card hero-card">
+      <div class="eyebrow">GBS504 · Support Channel</div>
+      <h1 class="page-title">تطبيقات حاسوبية</h1>
+      <p class="lead">خمسة فصول تغطي المادة كاملة: من مفاهيم الحاسوب وأتمتة المكاتب، إلى Excel المتقدم بدواله ومراجعه، وصولاً إلى تصميم قواعد البيانات وAccess. كل فصل فيه شرح مركّز، واختبار تفاعلي، وبنك أسئلة كامل قابل للتصفح.</p>
+      <div class="chips">
+        <div class="chip">${doneCount}/${CHAPTERS.length} فصول مكتملة</div>
+        <div class="chip">١٧١ سؤال تدريبي</div>
+        <div class="chip">امتحان شامل نهائي</div>
+      </div>
+      <div class="btn-row">
+        <button class="btn" onclick="go('${CHAPTERS[0].id}')">بدء الفصل الأول</button>
+        <button class="btn secondary" onclick="go('bank')">تصفّح بنك الأسئلة</button>
+        <button class="btn ghost" onclick="resetProgress()">إعادة تعيين التقدم</button>
+      </div>
+    </div>
+    <div class="card">
+      <h2 style="margin-top:0;border:none;padding:0;">خارطة المادة</h2>
+      ${CHAPTERS.map(c=>{
+        const st = state.chapters[c.id];
+        return `<div class="bank-item" style="cursor:pointer" onclick="go('${c.id}')">
+          <div class="bank-q">
+            <div>
+              <div class="bank-idx">الفصل ${c.num}</div>
+              <div class="bank-q-text" style="margin-top:4px;">${c.title}</div>
+            </div>
+            <div style="text-align:left;flex-shrink:0;">
+              ${st.done? '<span style="color:var(--success);font-weight:700;">✓ مكتمل</span>' : `<span style="color:var(--muted);">${st.bestPct}%</span>`}
+            </div>
+          </div>
+        </div>`;
+      }).join('')}
+    </div>
+  `;
+}
+
+// ============ EXPANDED REFERENCE FROM COURSE SUMMARY ============
+const FULL_REFERENCE = {
+ch1:`<div class="sec"><h2>تفصيل مرجعي موسّع</h2><h3>دور الحاسوب في المؤسسة</h3><ul><li>يعالج البيانات ويعيد تشكيل أساسيات العمل: خدمة العملاء والعمليات والإنتاج والتسويق.</li><li>تنتشر تطبيقاته عبر المؤسسة، من المكتب والمتجر حتى المخازن، وقد تُوزّع الأعمال جغرافياً على نطاق واسع.</li><li>يمتاز بالسرعة والدقة والاجتهاد (لا يتعب) والذاكرة الكبيرة؛ أما عيبه الجوهري فهو عدم امتلاكه ذكاءً ذاتياً كالإِنسان.</li></ul><h3>أتمتة المكاتب</h3><table class="ref"><tr><th>الوظيفة</th><th>المقصود</th></tr><tr><td>إنشاء المستندات</td><td>استخدام الآلات الكاتبة والحواسيب والطابعات.</td></tr><tr><td>معالجة المستندات</td><td>معالج النصوص والنشر المكتبي.</td></tr><tr><td>توزيع المستندات</td><td>إصدار الوثائق والتقارير وتحديد الجهة ووسيلة الإرسال المناسبة.</td></tr><tr><td>الأرشفة</td><td>حفظ المستندات والسجلات والبيانات بطريقة منظمة للاستخدام اللاحق.</td></tr></table><p><b>أنظمة الأتمتة:</b> إدارة المستندات، الاتصالات، المؤتمرات عن بُعد، وأنظمة الدعم.</p><h3>البرمجيات والحزم</h3><p>البرنامج سلسلة تعليمات ينفذها الحاسوب؛ والبرمجيات إجراءات أو تعليمات منطقية تُدخل إلى الذاكرة لتمكين المكوّنات المادية من أداء المهمة. تتضمن حزمة النظام: نظام التشغيل، مترجمات اللغات، والأدوات المساعدة.</p><table class="ref"><tr><th>أداة نظام</th><th>وظيفتها</th></tr><tr><td>مدير الملفات</td><td>إنشاء الملفات ونسخها وتحديثها وحذفها.</td></tr><tr><td>المحمّل Loader</td><td>تحميل شفرة الآلة للبرنامج إلى ذاكرة النظام.</td></tr><tr><td>محدد الموقع Locator</td><td>تخصيص عناوين الذاكرة للبرنامج المحمّل.</td></tr><tr><td>الرابط Linker</td><td>ربط البرامج الصغيرة (الوحدات) لتكوين برنامج واحد.</td></tr></table><h3>البرامج التطبيقية</h3><ul><li><b>عامة الأغراض:</b> ترفع إنتاجية المستخدم النهائي، مثل معالجة النصوص وجداول البيانات والعروض وقواعد البيانات.</li><li><b>مخصصة:</b> تطوّر لمستخدم محدد أو بطلب من منظمة مهنية متخصصة.</li></ul></div>`,
+ch2:`<div class="sec"><h2>تفصيل مرجعي موسّع</h2><h3>جداول البيانات وExcel</h3><p>جدول البيانات أداة برمجية لإدخال الأرقام والنصوص وحسابها ومعالجتها وتحليل مجموعات البيانات. وهو شبكة من صفوف وأعمدة تظهر على الشاشة وتُخزَّن بياناتها في الذاكرة. يمكن لـExcel دعم أعمال الإدارة، الفرز والتصفية والاستعلام وإصدار تقارير تفصيلية أو ملخصة.</p><h3>المراجع في الصيغ</h3><table class="ref"><tr><th>النوع</th><th>المعنى</th><th>مثال</th></tr><tr><td>نسبي</td><td>يتغير الصف والعمود عند التعبئة التلقائية.</td><td class="mono">A1</td></tr><tr><td>مطلق</td><td>يثبّت العمود والصف معاً.</td><td class="mono">$A$2</td></tr><tr><td>مختلط</td><td>يثبّت الصف أو العمود فقط.</td><td class="mono">$A1 / A$1</td></tr></table><h3>قاعدة بيانات Excel</h3><ul><li>لكل حقل اسم مميز يختلف عن أسماء الحقول الأخرى، وتكون القائمة متصلة بلا صفوف أو أعمدة فارغة داخلها.</li><li>عند وجود أكثر من قاعدة في الورقة نفسها يجب الفصل بينها بسطر وعمود فارغين؛ والأفضل تخصيص ورقة مستقلة.</li><li>الإدخال: مباشر، عبر نموذج Form، أو بصيغ للأعمدة المحسوبة.</li></ul><h3>التحقق والبحث والتصفية</h3><table class="ref"><tr><th>الأداة</th><th>الاستخدام</th></tr><tr><td>Data Validation</td><td>تقييد نوع وقيمة الإدخال، وإظهار رسالة إرشاد أو رسالة خطأ.</td></tr><tr><td>Find / Replace</td><td>البحث والاستبدال عبر Ctrl+F وCtrl+H، مع الانتباه لخيار مطابقة كامل الحقل.</td></tr><tr><td>AutoFilter</td><td>تفعيل التصفية من قائمة Data ثم Filter؛ والتصفية المخصصة تضع معياراً لحقل.</td></tr></table><p><b>دوال مهمة:</b> الدوال المالية لتقييم الاستثمارات، ودالة TODAY للتاريخ الحالي، وSUBTOTAL للمجاميع الفرعية. تذكّر أن TRUE تعامل كـ1 وFALSE كـ0 في السياقات الحسابية المناسبة.</p></div>`,
+ch3:`<div class="sec"><h2>تفصيل مرجعي موسّع</h2><h3>مفهوم DBMS ومكوّناته</h3><p>نظام إدارة قواعد البيانات حزمة برمجية تمكّن المصمم من إنشاء قاعدة البيانات وتعديلها، ومعالجة بياناتها للوصول إلى المعلومات المطلوبة. يتكوّن النظام المؤتمت من: قاعدة البيانات، البرمجيات/DBMS، التجهيزات المادية، والمستخدمين.</p><h3>اللغات والمستويات</h3><table class="ref"><tr><th>العنصر</th><th>الدور</th></tr><tr><td>DDL</td><td>تعريف البنية المنطقية للملفات والجداول والعلاقات.</td></tr><tr><td>DML</td><td>قراءة السجلات وإضافتها وتحديثها وحذفها ودمج الملفات وإجراء المعالجات.</td></tr><tr><td>المستوى الخارجي</td><td>منظور المستخدم النهائي أو مبرمج التطبيقات.</td></tr><tr><td>المستوى المنطقي</td><td>تحليل الحاجة للمعلومات وتحديد البيانات والعلاقات والتوافق والصلاحيات.</td></tr><tr><td>المستوى الفيزيائي</td><td>أماكن التخزين والفهارس ووصف السجلات وحفظ البيانات وتشفيرها.</td></tr></table><h3>أدوار العاملين</h3><ul><li><b>DBA:</b> الأمن والحماية، الاستعادة Recovery، الصلاحيات، وإعادة التنظيم وضبط الأداء.</li><li><b>محلل النظم:</b> تحديد متطلبات المستخدم وتحويلها إلى مواصفات.</li><li><b>مبرمج التطبيقات:</b> تحويل التصميم إلى قاعدة فعلية، التحقق من الصحة، وبناء واجهات الإدخال والإخراج والتقارير.</li></ul><h3>لماذا DBMS؟ ومتى لا نستخدمه؟</h3><p>يعالج مشكلات نظام الملفات التقليدي: التكرار، تبعية الملفات للتطبيقات، بطء إضافة التطبيقات، وتشتت الرقابة. ويؤمن الاستقلالية، المشاركة، ضبط التكرار، الأمن والسرية، النسخ الاحتياطي والاستعادة، التكامل والمرونة وسهولة الصيانة.</p><div class="warn">قد لا يكون مناسباً إذا كانت كلفة الإعداد كبيرة مقارنة بحجم المشروع، أو كانت البيانات والتطبيقات بسيطة، أو كانت الاستجابة الفورية جداً مطلوبة، أو لا توجد بيئة متعددة المستخدمين.</div><p><b>الأنواع:</b> هرمي، شبكي، وترابطي. يركّز المقرر على الترابطي لانتشاره وبساطته ومرونته.</p></div>`,
+ch4:`<div class="sec"><h2>تفصيل مرجعي موسّع</h2><h3>النموذج الترابطي</h3><ul><li>يعرض البيانات للمستخدم في جداول، بينما يتولى النظام تفاصيل التخزين.</li><li>القيم ذرّية: لا تحتوي الخانة الواحدة على أكثر من قيمة.</li><li>الرابطة هي مجموعة أسطر/سجلات غير مرتبة، لا تتكرر أسطرها؛ والصفات/الأعمدة غير مرتبة. درجة الرابطة هي عدد أعمدتها.</li></ul><table class="ref"><tr><th>نوع المفتاح</th><th>التعريف</th></tr><tr><td>رئيسي Primary</td><td>يميّز كل سجل؛ لا يتكرر ولا يكون فارغاً، ولا تُزال صفة منه إن كان مركباً.</td></tr><tr><td>مرشح Candidate</td><td>صفة أو مجموعة صفات يمكن اختيارها لتصبح مفتاحاً رئيسياً.</td></tr><tr><td>أجنبي Foreign</td><td>حقل يشير إلى مفتاح رئيسي في جدول آخر لإقامة العلاقة.</td></tr></table><h3>العلاقات وعمليات الجبر العلائقي</h3><p>العلاقات: 1:1، و1:N، وM:N (وتحتاج الأخيرة عادةً جدولاً وسيطاً). العمليات: UNION للاتحاد، INTERSECTION للتقاطع، DIFFERENCE للفرق، JOIN للوصل، RESTRICTION لاختيار السجلات بشرط، وPROJECTION لاختيار الأعمدة.</p><h3>التصميم وERM</h3><p>التصميم المنطقي يحوّل واقع العمل إلى نموذج بيانات، ثم يحوّل التصميم الفيزيائي ذلك النموذج إلى ملفات باستخدام DDL. في ERM: الكيان شيء مادي أو مجرد مهم للمنظمة، والصفة خاصية تصفه، والعلاقة رابط منطقي، وDomain مجموعة القيم الممكنة للصفة. أهداف البناء: منع التكرار والتناقض، التكامل، والاستقلالية.</p><h3>REA</h3><table class="ref"><tr><th>الكيان</th><th>معناه</th></tr><tr><td>Resources</td><td>أشياء لها قيمة اقتصادية.</td></tr><tr><td>Events</td><td>أنشطة المنظمة.</td></tr><tr><td>Agents</td><td>الأشخاص والمنظمات.</td></tr></table><p>كل حدث يرتبط بمورد واحد وبحدث واحد وبوكيلين على الأقل. علاقة الوكيل بالحدث 1:N، والموظف مع طلب البيع 0:N، والمخزون مع طلب العميل M:N.</p></div>`,
+ch5:`<div class="sec"><h2>تفصيل مرجعي موسّع</h2><h3>Access والعلاقات</h3><p>عند إنشاء جدول دون مفتاح رئيسي، يمكن لـAccess إنشاء حقل «المعرّف» بترقيم تلقائي وفهرس للمفتاح. يضمن التكامل المرجعي منع السجلات المعزولة وتزامن المراجع؛ وتحديث المفتاح الرئيسي أو حذفه يمكن أن يتالى إلى السجلات المرتبطة عند تفعيل الخيار المناسب.</p><h3>الاستعلامات وSQL</h3><table class="ref"><tr><th>النوع/البند</th><th>الغرض</th></tr><tr><td>SELECT / FROM</td><td>استعادة حقول من جدول أو أكثر؛ النتائج لا تُخزّن ثابتة وتُحدّث عند التشغيل.</td></tr><tr><td>WHERE</td><td>تصفية السجلات بمعيار، مع AND وOR.</td></tr><tr><td>DISTINCT / ORDER BY</td><td>إزالة التكرار / ترتيب النتائج.</td></tr><tr><td>GROUP BY / HAVING</td><td>تجميع القيم ثم وضع شرط على المجموعات.</td></tr><tr><td>BETWEEN, LIKE, IN</td><td>نطاق، مطابقة نمط، أو قائمة قيم.</td></tr><tr><td>Action Queries</td><td>حذف Delete، إضافة Append، تحديث Update.</td></tr></table><p>الدوال التجميعية: Sum وAvg وMin وMax. الاستعلام الفرعي SELECT داخل استعلام آخر ويُنفذ أولاً؛ واستعلام المعلمات يطلب من المستخدم قيمة عند التشغيل.</p><h3>الجداول الافتراضية والربط</h3><p>الجدول الافتراضي يعرض بيانات مشتقة دون تعديل الأصل، ويعزز الأمان ويتيح تسميات أو بنية عرض مناسبة. استخدم INNER JOIN للمطابق فقط، وLEFT JOIN لكل سجلات الجدول الأول مع المطابق، وRIGHT JOIN لكل سجلات الثاني مع المطابق. UNION يدمج نتائج متوافقة من مصدرين.</p><h3>النماذج والتقارير</h3><ul><li><b>النموذج المرتبط:</b> متصل بجدول أو استعلام؛ وغير المرتبط للأوامر والتسميات وعناصر التحكم.</li><li><b>النموذج المنقسم:</b> يعرض النموذج وورقة البيانات معاً؛ والنموذج الفرعي مناسب لعلاقة واحد لمتعدد.</li><li><b>Layout View:</b> تعدّل مع ظهور بيانات حقيقية. <b>Design View:</b> تحكم أكبر في الرأس والتفصيل والتذييل، لكن النموذج لا يعمل فعلياً أثناء التعديل.</li><li><b>التقارير:</b> تنسيق وتلخيص وعرض/توزيع/أرشفة البيانات؛ مصدر سجلاتها جدول أو استعلام.</li></ul><table class="ref"><tr><th>عنصر التحكم</th><th>مصدره</th></tr><tr><td>منضم Bound</td><td>حقل في جدول أو استعلام.</td></tr><tr><td>غير منضم Unbound</td><td>لا يرتبط بمصدر بيانات، مثل العنوان أو الصورة.</td></tr><tr><td>محسوب Calculated</td><td>تعبير بدلاً من حقل مباشر.</td></tr></table></div>`
+};
+
+// ============ CHAPTER VIEW ============
+function renderChapter(chapterId, tab){
+  const ch = CHAPTERS.find(c=>c.id===chapterId);
+  document.getElementById('crumbTitle').textContent = `الفصل ${ch.num} — ${ch.title}`;
+  const st = state.chapters[chapterId];
+  const content = document.getElementById('content');
+
+  const tabs = `
+    <div class="btn-row" style="margin-bottom:22px;">
+      <button class="btn ${tab==='read'?'':'secondary'}" onclick="renderChapter('${chapterId}','read')">📖 الشرح</button>
+      <button class="btn ${tab==='quiz'?'':'secondary'}" onclick="renderChapter('${chapterId}','quiz')">📝 اختبار الفصل</button>
+      <button class="btn ${tab==='full'?'':'secondary'}" onclick="renderChapter('${chapterId}','full')">≡ بنك أسئلة الفصل</button>
+    </div>`;
+
+  if(tab==='read'){
+    content.innerHTML = tabs + `
+      <div class="card">
+        <div class="stamp ${st.done?'show':''}"><b>مكتمل</b><span>PASSED</span></div>
+        <div class="eyebrow">الفصل ${ch.num}</div>
+        <h1 class="page-title" style="font-size:28px;">${ch.title}</h1>
+         ${ch.html}
+         ${FULL_REFERENCE[chapterId] || ''}
+        <div class="btn-row">
+          <button class="btn" onclick="renderChapter('${chapterId}','quiz')">ابدأ اختبار الفصل →</button>
+        </div>
+      </div>`;
+    state.chapters[chapterId].read = true; saveProgress();
+    return;
+  }
+
+  if(tab==='full'){
+    const bankQs = BANK[chapterId] || [];
+    content.innerHTML = tabs + `
+      <div class="card">
+        <div class="eyebrow">بنك أسئلة الفصل ${ch.num}</div>
+        <h1 class="page-title" style="font-size:26px;">كل أسئلة هذا الفصل (${bankQs.length})</h1>
+        <p class="lead" style="margin-bottom:18px;">هذه كل أسئلة هذا الفصل بصيغة اختيار من متعدد (أو صح/خطأ) — اختر إجابتك على كل سؤال ليظهر لك صحيح كانت أم خاطئة مع التوضيح.</p>
+        <div id="fullBankList"></div>
+      </div>`;
+    const list = document.getElementById('fullBankList');
+    bankQs.forEach((q,i)=>{
+      list.appendChild(buildInlineQuestionCard(q, `#${i+1}`));
+    });
+    return;
+  }
+
+  if(tab==='quiz'){
+    startQuiz(chapterId);
+  }
+}
+
+// ============ QUIZ ENGINE ============
+function startQuiz(chapterId){
+  const pool = (BANK[chapterId]||[]).concat(EXTRA[chapterId]||[]);
+  const qs = pick(pool, Math.min(QUIZ_LEN, pool.length));
+  quizState = { chapterId, questions: qs, idx:0, correctCount:0, answered:new Array(qs.length).fill(false) };
+  renderQuizQuestion();
+}
+
+function renderQuizQuestion(){
+  const ch = CHAPTERS.find(c=>c.id===quizState.chapterId);
+  const content = document.getElementById('content');
+  const q = quizState.questions[quizState.idx];
+  const total = quizState.questions.length;
+
+  content.innerHTML = `
+    <div class="btn-row" style="margin-bottom:18px;">
+      <button class="btn secondary" onclick="renderChapter('${ch.id}','read')">📖 الشرح</button>
+      <button class="btn" onclick="renderChapter('${ch.id}','quiz')">📝 اختبار الفصل</button>
+      <button class="btn secondary" onclick="renderChapter('${ch.id}','full')">≡ بنك أسئلة الفصل</button>
+    </div>
+    <div class="quiz-meta">
+      <div class="quiz-progress">اختبار الفصل ${ch.num} — ${ch.title}</div>
+      <div class="q-counter">سؤال <span id="qNum">${quizState.idx+1}</span> / ${total}</div>
+    </div>
+    <div class="qcard" id="qcard"></div>
+  `;
+  renderQuestionCard(document.getElementById('qcard'), q, onQuizAnswer);
+}
+
+function renderQuestionCard(container, q, onAnswer){
+  container.innerHTML = `
+    <div class="qtag">${q.t==='text'? 'أدخل الناتج' : 'اختر الإجابة الصحيحة'}</div>
+    <div class="qtext">${formatQuestion(q)}</div>
+    <div id="qbody"></div>
+    <div class="feedback" id="fb"></div>
+  `;
+  const body = container.querySelector('#qbody');
+  const fb = container.querySelector('#fb');
+
+  if(q.t==='text'){
+    body.innerHTML = `<div class="numeric-row">
+      <input type="text" id="txtInput" placeholder="اكتب الناتج هنا...">
+      <button class="btn" id="submitTxt">تحقق</button>
+    </div>`;
+    const input = body.querySelector('#txtInput');
+    const submit = body.querySelector('#submitTxt');
+    const submitFn = ()=>{
+      if(submit.disabled) return;
+      const val = input.value.trim().replace(/\s+/g,'');
+      const correct = val === String(q.a).trim();
+      submit.disabled = true; input.disabled = true;
+      fb.className = 'feedback show ' + (correct?'ok':'bad');
+      fb.innerHTML = (correct? '✔ إجابة صحيحة! ' : `✘ غير صحيح — الإجابة الصحيحة: <b class="mono">${q.a}</b>. `) + `<br><span class="explain-label">التوضيح:</span> ${q.ex||''}`;
+      onAnswer(correct);
+    };
+    submit.addEventListener('click', submitFn);
+    input.addEventListener('keydown', e=>{ if(e.key==='Enter') submitFn(); });
+  } else {
+    body.innerHTML = `<div class="options">` + q.o.map((opt,i)=>
+      `<div class="opt" data-i="${i}"><div class="bullet"></div><div>${opt}</div></div>`
+    ).join('') + `</div>`;
+    let answered = false;
+    body.querySelectorAll('.opt').forEach(optEl=>{
+      optEl.addEventListener('click', ()=>{
+        if(answered) return;
+        answered = true;
+        const chosen = parseInt(optEl.dataset.i);
+        const correct = chosen === q.a;
+        body.querySelectorAll('.opt').forEach(o=>{
+          o.classList.add('disabled');
+          const i = parseInt(o.dataset.i);
+          if(i===q.a) o.classList.add('correct');
+          else if(i===chosen) o.classList.add('wrong');
+        });
+        fb.className = 'feedback show ' + (correct?'ok':'bad');
+        fb.innerHTML = (correct? '✔ إجابة صحيحة! ' : '✘ غير صحيح. ') + `<br><span class="explain-label">التوضيح:</span> ${q.ex||''}`;
+        onAnswer(correct);
+      });
+    });
+  }
+}
+
+function onQuizAnswer(correct){
+  if(correct) quizState.correctCount++;
+  quizState.answered[quizState.idx] = true;
+  const isLast = quizState.idx === quizState.questions.length-1;
+  const qcard = document.getElementById('qcard');
+  const nextBtn = el(`<div class="btn-row"><button class="btn" id="nextQ">${isLast? 'عرض النتيجة النهائية →' : 'السؤال التالي →'}</button></div>`);
+  qcard.appendChild(nextBtn);
+  document.getElementById('nextQ').addEventListener('click', ()=>{
+    if(isLast) finishQuiz();
+    else { quizState.idx++; renderQuizQuestion(); }
+  });
+}
+
+function finishQuiz(){
+  const ch = CHAPTERS.find(c=>c.id===quizState.chapterId);
+  const total = quizState.questions.length;
+  const scorePct = pct(quizState.correctCount, total);
+  const st = state.chapters[ch.id];
+  st.bestPct = Math.max(st.bestPct, scorePct);
+  if(scorePct >= PASS_PCT) st.done = true;
+  saveProgress();
+  renderNav();
+
+  const passed = scorePct >= PASS_PCT;
+  const content = document.getElementById('content');
+  content.innerHTML = `
+    <div class="card result-card">
+      <div class="stamp ${passed?'show':''}"><b>ناجح</b><span>PASSED</span></div>
+      <div class="eyebrow">نتيجة اختبار الفصل ${ch.num}</div>
+      <div class="result-score">${scorePct}<span>%</span></div>
+      <div class="result-msg">${quizState.correctCount} من ${total} إجابات صحيحة</div>
+      <p class="lead" style="margin-top:10px;">${passed
+        ? 'أحسنت! تجاوزت نسبة النجاح (٨٠٪) — الفصل الآن مكتمل ومختوم في القائمة الجانبية.'
+        : `تحتاج ٨٠٪ فأكثر لختم هذا الفصل كمكتمل. راجع الشرح مرة أخرى وأعد المحاولة — التكرار هو أساس الحفظ في هذه المادة.`}</p>
+      <div class="btn-row" style="justify-content:center;">
+        <button class="btn" onclick="startQuiz('${ch.id}'); go('${ch.id}',{tab:'quiz'}); renderQuizQuestion();">إعادة الاختبار (أسئلة جديدة)</button>
+        <button class="btn secondary" onclick="renderChapter('${ch.id}','read')">مراجعة الشرح</button>
+        ${allChaptersDone() ? `<button class="btn ghost" onclick="go('final')">الانتقال للامتحان الشامل ★</button>` : ''}
+      </div>
+    </div>
+  `;
+}
+
+// ============ FINAL EXAM ============
+function renderFinal(){
+  document.getElementById('crumbTitle').textContent = 'الامتحان الشامل النهائي';
+  const content = document.getElementById('content');
+  const unlocked = allChaptersDone();
+
+  if(!unlocked){
+    const remaining = CHAPTERS.filter(c=>!state.chapters[c.id].done);
+    content.innerHTML = `
+      <div class="card lock-card">
+        <div class="lock-icon">🔒</div>
+        <h1 class="page-title" style="font-size:26px;">الامتحان الشامل مقفول بعد</h1>
+        <p class="lead">لازم تكمّل وتنجح (٨٠٪ فأكثر) باختبار كل فصل قبل ما تفتح الامتحان الشامل النهائي.</p>
+        <div class="chips" style="justify-content:center;">
+          ${remaining.map(c=>`<div class="chip">الفصل ${c.num}: ${c.short}</div>`).join('')}
+        </div>
+        <div class="btn-row" style="justify-content:center;margin-top:20px;">
+          <button class="btn" onclick="go('${remaining[0].id}')">الذهاب للفصل ${remaining[0].num}</button>
+        </div>
+      </div>`;
+    return;
+  }
+
+  content.innerHTML = `
+    <div class="card">
+      <div class="eyebrow">تقييم شامل · ٥٠ سؤال</div>
+      <h1 class="page-title" style="font-size:28px;">الامتحان الشامل النهائي</h1>
+      <p class="lead">امتحان يجمع أسئلة من كل الفصول الخمسة، مُختارة عشوائياً من بنك الأسئلة الكامل (١٧١ سؤال). كل محاولة تعرض تشكيلة مختلفة — أعد المحاولة عدة مرات لتغطية كل الأسئلة تدريجياً.</p>
+      <div class="chips">
+        <div class="chip">أفضل نتيجة سابقة: ${state.finalBest}%</div>
+        <div class="chip">عدد المحاولات: ${state.finalAttempts}</div>
+      </div>
+      <div class="btn-row">
+        <button class="btn" onclick="startFinal()">ابدأ الامتحان الشامل</button>
+      </div>
+    </div>`;
+}
+
+function startFinal(){
+  const allBank = [];
+  CHAPTERS.forEach(c=> allBank.push(...(BANK[c.id]||[]).map(q=>({...q, __ch:c.num}))) );
+  const qs = pick(allBank, Math.min(50, allBank.length));
+  quizState = { chapterId:'final', questions: qs, idx:0, correctCount:0, answered:new Array(qs.length).fill(false) };
+  renderFinalQuestion();
+}
+
+function renderFinalQuestion(){
+  const content = document.getElementById('content');
+  const q = quizState.questions[quizState.idx];
+  const total = quizState.questions.length;
+  content.innerHTML = `
+    <div class="quiz-meta">
+      <div class="quiz-progress">الامتحان الشامل النهائي — سؤال من الفصل ${q.__ch}</div>
+      <div class="q-counter">سؤال <span id="qNum">${quizState.idx+1}</span> / ${total}</div>
+    </div>
+    <div class="qcard" id="qcard"></div>
+  `;
+  renderQuestionCard(document.getElementById('qcard'), q, onFinalAnswer);
+}
+
+function onFinalAnswer(correct){
+  if(correct) quizState.correctCount++;
+  const isLast = quizState.idx === quizState.questions.length-1;
+  const qcard = document.getElementById('qcard');
+  const nextBtn = el(`<div class="btn-row"><button class="btn" id="nextQ">${isLast? 'عرض النتيجة النهائية →' : 'السؤال التالي →'}</button></div>`);
+  qcard.appendChild(nextBtn);
+  document.getElementById('nextQ').addEventListener('click', ()=>{
+    if(isLast) finishFinal();
+    else { quizState.idx++; renderFinalQuestion(); }
+  });
+}
+
+function finishFinal(){
+  const total = quizState.questions.length;
+  const scorePct = pct(quizState.correctCount, total);
+  state.finalAttempts++;
+  state.finalBest = Math.max(state.finalBest, scorePct);
+  saveProgress();
+  renderNav();
+
+  let grade, gradeColor;
+  if(scorePct>=90){grade='ممتاز';gradeColor='var(--success)';}
+  else if(scorePct>=80){grade='جيد جداً';gradeColor='var(--success)';}
+  else if(scorePct>=65){grade='جيد';gradeColor='var(--brass-deep)';}
+  else {grade='يحتاج مراجعة';gradeColor='var(--danger)';}
+
+  const content = document.getElementById('content');
+  content.innerHTML = `
+    <div class="card result-card">
+      <div class="eyebrow">نتيجة الامتحان الشامل</div>
+      <div class="result-score" style="color:${gradeColor}">${scorePct}<span>%</span></div>
+      <div class="result-msg">${quizState.correctCount} من ${total} إجابات صحيحة — <b style="color:${gradeColor}">${grade}</b></div>
+      <p class="lead" style="margin-top:10px;">أفضل نتيجة لك حتى الآن: <b>${state.finalBest}%</b> عبر ${state.finalAttempts} محاولة/محاولات. كل محاولة تسحب أسئلة مختلفة من البنك — أعد المحاولة لتغطي أكبر عدد من الأسئلة وترسّخ المادة.</p>
+      <div class="btn-row" style="justify-content:center;">
+        <button class="btn" onclick="startFinal(); go('final'); renderFinalQuestion();">محاولة جديدة</button>
+        <button class="btn secondary" onclick="go('bank')">مراجعة بنك الأسئلة الكامل</button>
+      </div>
+    </div>`;
+}
+
+// ============ FULL BANK BROWSER ============
+function renderBankBrowser(activeChapter){
+  document.getElementById('crumbTitle').textContent = 'بنك الأسئلة الكامل';
+  activeChapter = activeChapter || 'all';
+  const content = document.getElementById('content');
+  const totalCount = Object.values(BANK).reduce((s,a)=>s+a.length,0);
+
+  content.innerHTML = `
+    <div class="card">
+      <div class="eyebrow">مرجع شامل</div>
+      <h1 class="page-title" style="font-size:28px;">بنك الأسئلة الكامل (${totalCount} سؤال)</h1>
+      <p class="lead">كل الأسئلة المستخرجة من ملفات بنك الأسئلة للدورات السابقة، مصنّفة حسب الفصل، بصيغة اختيار من متعدد (أو صح/خطأ) — اختر إجابتك على كل سؤال ليظهر لك صحيح كانت أم خاطئة.</p>
+      <div class="bank-filter" id="bankFilter">
+        <button class="filter-btn ${activeChapter==='all'?'active':''}" data-f="all">الكل (${totalCount})</button>
+        ${CHAPTERS.map(c=>`<button class="filter-btn ${activeChapter===c.id?'active':''}" data-f="${c.id}">ف${c.num} · ${c.short} (${BANK[c.id].length})</button>`).join('')}
+      </div>
+      <div id="bankListAll"></div>
+    </div>`;
+
+  function draw(filter){
+    const listEl = document.getElementById('bankListAll');
+    listEl.innerHTML = '';
+    const chaptersToShow = filter==='all'? CHAPTERS : CHAPTERS.filter(c=>c.id===filter);
+    chaptersToShow.forEach(c=>{
+      const group = el(`<div style="margin-bottom:10px;"><h3 style="margin-top:22px;">الفصل ${c.num} — ${c.title}</h3></div>`);
+      listEl.appendChild(group);
+      BANK[c.id].forEach((q,i)=>{
+        listEl.appendChild(buildInlineQuestionCard(q, `ف${c.num} #${i+1}`));
+      });
+    });
+  }
+  draw(activeChapter);
+  document.querySelectorAll('#bankFilter .filter-btn').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      document.querySelectorAll('#bankFilter .filter-btn').forEach(b=>b.classList.remove('active'));
+      btn.classList.add('active');
+      draw(btn.dataset.f);
+    });
+  });
+}
+
+// ============ EXTRA HUB ============
+function renderExtraHub(){
+  document.getElementById('crumbTitle').textContent = 'تمارين إضافية';
+  const totalExtra = Object.values(EXTRA).reduce((s,a)=>s+a.length,0);
+  const content = document.getElementById('content');
+  content.innerHTML = `
+    <div class="card">
+      <div class="eyebrow">تحدٍ إضافي</div>
+      <h1 class="page-title" style="font-size:28px;">تمارين إضافية (${totalExtra} سؤال)</h1>
+      <p class="lead">أسئلة إضافية أُنشئت خصيصاً لتوسيع تدريبك بعد إنهاء بنك الأسئلة الأصلي — بنفس نمط الأسئلة الامتحانية لكل فصل. اختر فصلاً لتجربة اختبار قصير من هذه الأسئلة فقط.</p>
+      <div class="bank-filter">
+        ${CHAPTERS.map(c=>`<button class="filter-btn" data-c="${c.id}">ف${c.num} · ${c.short} (${EXTRA[c.id].length})</button>`).join('')}
+      </div>
+    </div>
+    <div id="extraArea"></div>`;
+  document.querySelectorAll('.bank-filter .filter-btn[data-c]').forEach(btn=>{
+    btn.addEventListener('click', ()=> startExtraQuiz(btn.dataset.c));
+  });
+}
+
+function startExtraQuiz(chapterId){
+  const ch = CHAPTERS.find(c=>c.id===chapterId);
+  const qs = shuffle(EXTRA[chapterId]);
+  quizState = { chapterId:'extra-'+chapterId, questions: qs, idx:0, correctCount:0, answered:new Array(qs.length).fill(false) };
+  renderExtraQuestion(ch);
+}
+
+function renderExtraQuestion(ch){
+  const content = document.getElementById('content');
+  const q = quizState.questions[quizState.idx];
+  const total = quizState.questions.length;
+  content.innerHTML = `
+    <div class="quiz-meta">
+      <div class="quiz-progress">تمارين إضافية — ${ch.title}</div>
+      <div class="q-counter">سؤال <span id="qNum">${quizState.idx+1}</span> / ${total}</div>
+    </div>
+    <div class="qcard" id="qcard"></div>
+  `;
+  renderQuestionCard(document.getElementById('qcard'), q, (correct)=>{
+    if(correct) quizState.correctCount++;
+    const isLast = quizState.idx === quizState.questions.length-1;
+    const qcard = document.getElementById('qcard');
+    const nextBtn = el(`<div class="btn-row"><button class="btn" id="nextQ">${isLast? 'إنهاء' : 'السؤال التالي →'}</button></div>`);
+    qcard.appendChild(nextBtn);
+    document.getElementById('nextQ').addEventListener('click', ()=>{
+      if(isLast){
+        const scorePct = pct(quizState.correctCount, total);
+        document.getElementById('content').innerHTML = `
+          <div class="card result-card">
+            <div class="eyebrow">نتيجة التمرين الإضافي</div>
+            <div class="result-score">${scorePct}<span>%</span></div>
+            <div class="result-msg">${quizState.correctCount} من ${total} إجابات صحيحة</div>
+            <div class="btn-row" style="justify-content:center;">
+              <button class="btn" onclick="startExtraQuiz('${ch.id}')">إعادة المحاولة</button>
+              <button class="btn secondary" onclick="go('extra')">رجوع للتمارين الإضافية</button>
+            </div>
+          </div>`;
+      } else { quizState.idx++; renderExtraQuestion(ch); }
+    });
+  });
+}
+
+// ============ INIT ============
+renderNav();
+renderHome();
+
+</script>
+</body>
+</html>
