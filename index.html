@@ -1201,7 +1201,7 @@ function renderQuestionCard(container, q, onAnswer){
     input.addEventListener('keydown', e=>{ if(e.key==='Enter') submitFn(); });
   } else {
     body.innerHTML = `<div class="options">` + q.o.map((opt,i)=>
-      `<div class="opt" data-i="${i}"><div class="bullet"></div><div dir="ltr" class="mono">${opt}</div></div>`
+            `<div class="opt" data-i="${i}"><div class="bullet"></div><div>${opt}</div></div>`
     ).join('') + `</div>`;
     let answered = false;
     body.querySelectorAll('.opt').forEach(optEl=>{
